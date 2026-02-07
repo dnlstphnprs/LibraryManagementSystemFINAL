@@ -1,0 +1,15 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package librarymanagementsystem;
+
+/**
+ *
+ * @author Daeniel Presa
+ */
+public class SessionManager {
+    public static String userID;
+    public static String userName;
+    public static String role;
+}

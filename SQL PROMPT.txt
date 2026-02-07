@@ -1,0 +1,49 @@
+SQL USERS TABLE PROMPT:
+
+CREATE TABLE Students (
+    StudentID VARCHAR(12) NOT NULL PRIMARY KEY,       
+    StudentName VARCHAR(200) NOT NULL,        
+    Password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Employees (
+    EmployeeID VARCHAR(12) NOT NULL PRIMARY KEY,  
+    EmployeeName VARCHAR(200) NOT NULL,
+    Password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE BookInventory (
+    BookID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    BookName VARCHAR(255) NOT NULL,
+    Author VARCHAR(255) NOT NULL,
+    YearPurchased INT NOT NULL,
+    AvailableCopies INT NOT NULL CHECK (AvailableCopies >= 0),
+    BorrowedCopies INT NOT NULL DEFAULT 0 CHECK (BorrowedCopies >= 0)
+);
+
+
+CREATE TABLE BorrowedBooks (
+    BorrowID INT AUTO_INCREMENT PRIMARY KEY,
+    BookName VARCHAR(255) NOT NULL,
+    StudentName VARCHAR(255) NOT NULL,
+    DateBorrowed DATETIME NOT NULL,
+    DueDate DATETIME NOT NULL
+);
+
+
+CREATE TABLE TransactionHistory (
+    TransactionID INT AUTO_INCREMENT PRIMARY KEY,
+    StudentID VARCHAR(12) NOT NULL,
+    BookName VARCHAR(255) NOT NULL,
+    DateBorrowed DATE NOT NULL,
+    DueDate DATE NOT NULL,
+    ReturnDate DATE,
+    Penalty DECIMAL(10, 2) DEFAULT 0.00,
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID)
+);
+
+
+
+
+
+

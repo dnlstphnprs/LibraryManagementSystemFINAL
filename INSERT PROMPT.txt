@@ -1,0 +1,23 @@
+INSERT INTO BookInventory 
+(BookName, Author, YearPurchased, AvailableCopies, BorrowedCopies) 
+VALUES
+('Noli Me Tangere', 'Jose Rizal', 2020, 5, 0),
+('El Filibusterismo', 'Jose Rizal', 2021, 4, 0),
+('Mga Ibong Mandaragit', 'Amado V. Hernandez', 2022, 3, 0),
+('The Great Gatsby', 'F. Scott Fitzgerald', 2021, 7, 0),
+('To Kill a Mockingbird', 'Harper Lee', 2022, 2, 0),
+('1984', 'George Orwell', 2023, 2, 0),
+('Harry Potter and the Sorcerer''s Stone', 'J.K. Rowling', 2024, 6, 0),
+('Dekada ’70', 'Lualhati Bautista', 2019, 2, 0),
+('Alamat ng Gubat', 'Bob Ong', 2023, 3, 0),
+('Florante at Laura', 'Francisco Balagtas', 2025, 3, 0),
+('Pride and Prejudice', 'Jane Austen', 2020, 4, 0),
+('The Catcher in the Rye', 'J.D. Salinger', 2021, 5, 0),
+('Brave New World', 'Aldous Huxley', 2022, 3, 0),
+('One Hundred Years of Solitude', 'Gabriel Garcia Marquez', 2023, 2, 0),
+('The Hobbit', 'J.R.R. Tolkien', 2022, 6, 0),
+('Crime and Punishment', 'Fyodor Dostoevsky', 2019, 3, 0),
+('Les Misérables', 'Victor Hugo', 2021, 4, 0),
+('The Alchemist', 'Paulo Coelho', 2023, 5, 0),
+('Animal Farm', 'George Orwell', 2022, 4, 0),
+('The Little Prince', 'Antoine de Saint-Exupéry', 2020, 3, 0);
