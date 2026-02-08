@@ -54,14 +54,13 @@ public class ReturnBooks extends javax.swing.JFrame {
 
         jSeparator1 = new javax.swing.JSeparator();
         dateandtimeLabel = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        MyBooksTable = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         btnReturn = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        MyBooksTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(700, 500));
@@ -72,30 +71,6 @@ public class ReturnBooks extends javax.swing.JFrame {
         dateandtimeLabel.setForeground(new java.awt.Color(255, 255, 255));
         dateandtimeLabel.setText("Date & Time");
         getContentPane().add(dateandtimeLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 30, -1, 10));
-
-        jPanel1.add(jScrollPane2);
-
-        MyBooksTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
-            }
-        ));
-        MyBooksTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                MyBooksTableMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(MyBooksTable);
-
-        jPanel1.add(jScrollPane1);
-
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 120, 630, 70));
 
         jLabel4.setFont(new java.awt.Font("MS Reference Sans Serif", 1, 18)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
@@ -121,6 +96,30 @@ public class ReturnBooks extends javax.swing.JFrame {
         getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 460, -1, -1));
 
         jPanel2.setBackground(new java.awt.Color(87, 87, 87));
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        MyBooksTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        MyBooksTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                MyBooksTableMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(MyBooksTable);
+
+        jScrollPane3.setViewportView(jScrollPane1);
+
+        jPanel2.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 70, 450, 110));
+
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 500));
 
         pack();
@@ -329,10 +328,9 @@ public class ReturnBooks extends javax.swing.JFrame {
     private javax.swing.JLabel dateandtimeLabel;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
 }

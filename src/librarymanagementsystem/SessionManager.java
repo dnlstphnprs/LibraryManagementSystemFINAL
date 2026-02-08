@@ -11,5 +11,4 @@ package librarymanagementsystem;
 public class SessionManager {
     public static String userID;
     public static String userName;
-    public static String role;
 }

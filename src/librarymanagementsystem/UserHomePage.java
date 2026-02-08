@@ -30,9 +30,9 @@ public class UserHomePage extends javax.swing.JFrame {
         new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt)))
         .start();
         dateandtimeLabel.setText(LocalDateTime.now().format(fmt));
+        setLocationRelativeTo(null);
         SwingUtilities.invokeLater(() -> {
         checkOverdueBooks();
-        setLocationRelativeTo(null);
         });
     }
 

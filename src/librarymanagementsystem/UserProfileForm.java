@@ -14,14 +14,8 @@ import javax.swing.JOptionPane;
 import java.sql.SQLException;    
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.time.LocalDate;
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
+
 
  /*
  * @author Daeniel Presa
@@ -38,9 +32,9 @@ public class UserProfileForm extends javax.swing.JFrame {
         .start();
         setLocationRelativeTo(null);
         dateandtimeLabel.setText(LocalDateTime.now().format(fmt));
-        loadUserTransactions();
-        jTextField2.setText(SessionManager.userName);
-        jTextField1.setText(SessionManager.userID);
+        loadUserTransactions(); // executes Loading User Transaction method
+        jTextField2.setText(SessionManager.userName); // fetches data from session manager, sets to text box
+        jTextField1.setText(SessionManager.userID); // fetches data from session mana, sets to text box
     }
 
     /**
@@ -60,13 +54,13 @@ public class UserProfileForm extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
         jButton2 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         BookTable = new javax.swing.JScrollPane();
         MyTransactionsTable = new javax.swing.JTable();
-        jPanel1 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(700, 500));
@@ -103,8 +97,8 @@ public class UserProfileForm extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 460, -1, -1));
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 110, -1, -1));
 
+        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton2.setText("Log out");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -117,6 +111,9 @@ public class UserProfileForm extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Student ID:");
         getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 160, 110, 20));
+
+        jPanel1.setBackground(new java.awt.Color(87, 87, 87));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         MyTransactionsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -133,25 +130,27 @@ public class UserProfileForm extends javax.swing.JFrame {
 
         jScrollPane3.setViewportView(BookTable);
 
-        getContentPane().add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 320, 460, 100));
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 320, 480, 100));
 
-        jPanel1.setBackground(new java.awt.Color(87, 87, 87));
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/librarymanagementsystem/logo.png"))); // NOI18N
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 40, -1, -1));
+
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 500));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.dispose();
-        UserHomePage UHPForm = new UserHomePage();
-        UHPForm.setVisible(true);
+        this.dispose(); // removes current form
+        UserHomePage UHPForm = new UserHomePage(); // sets UHPForm variable to store the specified form for redirection
+        UHPForm.setVisible(true); // makes form visible
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        SessionManager.userID = null;
-        SessionManager.userName = null;
-        SessionManager.role = null;
-
+        SessionManager.userID = null; // removes saved data from login
+        SessionManager.userName = null; // removes saved data from login
+        
+        // redirection block
         this.dispose();
         LoginForm login = new LoginForm();
         login.setVisible(true);
@@ -194,17 +193,20 @@ public class UserProfileForm extends javax.swing.JFrame {
         });
     }
     
+    // table loading method
     private void loadUserTransactions() {
+        // attempts to make database connection
         try (Connection con = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/lbs", 
                 "root", 
                 "MySQLPW_1234")) {
             
+            // SQL prompt to fetch user's transaction history
             String sql = "SELECT * FROM TransactionHistory WHERE StudentID = ? ORDER BY DateBorrowed DESC";
-            PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, SessionManager.userID);
+            PreparedStatement pst = con.prepareStatement(sql); // puts sql prompt into prepared statement
+            pst.setString(1, SessionManager.userID); // sets first parameter as the user's saved login ID
 
-            ResultSet rs = pst.executeQuery();
+            ResultSet rs = pst.executeQuery(); // 
 
             DefaultTableModel model = new DefaultTableModel() {
                 @Override
@@ -258,8 +260,8 @@ public class UserProfileForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField jTextField1;

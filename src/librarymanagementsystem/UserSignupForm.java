@@ -23,11 +23,11 @@ public class UserSignupForm extends javax.swing.JFrame {
      */
     public UserSignupForm() {
         initComponents();
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
-        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt)))
-        .start();
-        dateandtimeLabel.setText(LocalDateTime.now().format(fmt));
-        setLocationRelativeTo(null);
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a"); // fetches date and time with format, placed into fmt 
+        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt))).start(); // starts timer, every 60k ms = 1 minute, every minute it activates it fetches data and sets it to the label
+        dateandtimeLabel.setText(LocalDateTime.now().format(fmt)); // sets the time when program is run
+        setLocationRelativeTo(null); // centers the form
+        // both makes label have an underline
         employeesignupLabel.setText("<html><u>" + employeesignupLabel.getText() + "</u></html>");
         loginLabel.setText("<html><u>" + loginLabel.getText() + "</u></html>");
     }
@@ -55,6 +55,7 @@ public class UserSignupForm extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         loginLabel = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(700, 500));
@@ -125,79 +126,88 @@ public class UserSignupForm extends javax.swing.JFrame {
         getContentPane().add(loginLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 430, -1, 20));
 
         jPanel1.setBackground(new java.awt.Color(87, 87, 87));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/librarymanagementsystem/logo.png"))); // NOI18N
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 60, -1, -1));
+
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 500));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    String studentID = txtStudentID.getText().trim();
-    String studentName = txtStudentName.getText().trim();
-    String password = new String(txtPassword.getPassword());
+        String studentID = txtStudentID.getText().trim(); // fetches text field contents
+        String studentName = txtStudentName.getText().trim(); // fetches text field contents
+        String password = new String(txtPassword.getPassword()); // fetches text field contents
 
-    String regex = "\\d{4}-\\d{7}";
+        String regex = "\\d{4}-\\d{7}"; // password pattern for user name (Example: 2025-1234567)
 
-    if (!Pattern.matches(regex, studentID)) {
-        JOptionPane.showMessageDialog(this, "Student ID must be in format YYYY-1234567",
-                                      "Invalid ID", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    if (studentName.isEmpty() || password.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Please fill all fields",
-                                      "Empty Fields", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    
-    if (password.length() < 8 ||
-        !password.matches(".*[A-Z].*") || 
-        !password.matches(".*[a-z].*") ||
-        !password.matches(".*\\d.*")){
-        JOptionPane.showMessageDialog(this,
-            "Password must be at least 8 characters and include:\n" +
-            "- 1 uppercase letter\n" +
-            "- 1 lowercase letter\n" +
-            "- 1 number\n",
-            "Invalid Password", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    String url = "jdbc:mysql://localhost:3306/lbs";
-    String user = "root";
-    String pass = "MySQLPW_1234";
-
-    String sql = "INSERT INTO Students (StudentID, StudentName, Password) VALUES (?, ?, ?)";
-
-    try (Connection conn = DriverManager.getConnection(url, user, pass);
-         PreparedStatement pst = conn.prepareStatement(sql)) {
-
-        pst.setString(1, studentID);
-        pst.setString(2, studentName);
-        pst.setString(3, password);
-        pst.executeUpdate();
-
-        JOptionPane.showMessageDialog(this, "Sign up successful!");
-        this.dispose();
-        LoginForm LForm = new LoginForm();
-        LForm.setVisible(true);
-
-    } catch (SQLException ex) {
-        if (ex.getErrorCode() == 1062) {
-            JOptionPane.showMessageDialog(this, "Student ID already exists!",
-                                          "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage(),
-                                          "Error", JOptionPane.ERROR_MESSAGE);
+        if (!Pattern.matches(regex, studentID)) { //if pattern doesn't match the user input in text field, send error message
+            JOptionPane.showMessageDialog(this, "Student ID must be in format YYYY-1234567", "Invalid ID", JOptionPane.ERROR_MESSAGE);
+            return;
         }
-    }
+
+        if (studentName.isEmpty() || password.isEmpty()) { // if fields are empty, send error message
+            JOptionPane.showMessageDialog(this, "Please fill all fields",
+                                          "Empty Fields", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // if password contains less than 8 characters, doesn't include an uppercase, lowercase, and a number, send error message
+        if (password.length() < 8 ||
+            !password.matches(".*[A-Z].*") || 
+            !password.matches(".*[a-z].*") ||
+            !password.matches(".*\\d.*")){
+            JOptionPane.showMessageDialog(this,
+                "Password must be at least 8 characters and include:\n" +
+                "- 1 uppercase letter\n" +
+                "- 1 lowercase letter\n" +
+                "- 1 number\n",
+                "Invalid Password", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String url = "jdbc:mysql://localhost:3306/lbs"; // stores database url
+        String user = "root"; // stores database password
+        String pass = "MySQLPW_1234"; // stores database password
+        
+        // SQL Prompt for inserting Students if all requirements are met, values are blank as default
+        String sql = "INSERT INTO Students (StudentID, StudentName, Password) VALUES (?, ?, ?)";
+
+        try (Connection conn = DriverManager.getConnection(url, user, pass); // makes a connection with the database
+             PreparedStatement pst = conn.prepareStatement(sql)) { // has the sql prompt for values insertion
+
+            pst.setString(1, studentID); // set first value as student id 
+            pst.setString(2, studentName); // set second value as student name
+            pst.setString(3, password); // set first value as password
+            pst.executeUpdate(); // executes prompt
+            
+            // message dialog for successful signup
+            JOptionPane.showMessageDialog(this, "Sign up successful!");
+            this.dispose();
+            LoginForm LForm = new LoginForm();
+            LForm.setVisible(true);
+
+        } catch (SQLException ex) { // catches all errors
+            if (ex.getErrorCode() == 1062) { // student already exists, show error message
+                JOptionPane.showMessageDialog(this, "Student ID already exists!",
+                                              "Error", JOptionPane.ERROR_MESSAGE);
+            } else { // if any other database errors may occur, show error message
+                JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage(),
+                                              "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void employeesignupLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_employeesignupLabelMouseClicked
+        // redirection block
         this.dispose();
         EmployeeSignupForm ESUForm = new EmployeeSignupForm();
         ESUForm.setVisible(true);
     }//GEN-LAST:event_employeesignupLabelMouseClicked
 
     private void loginLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginLabelMouseClicked
+        // redirection block
         this.dispose();
         LoginForm LForm = new LoginForm();
         LForm.setVisible(true);
@@ -243,6 +253,7 @@ public class UserSignupForm extends javax.swing.JFrame {
     private javax.swing.JLabel dateandtimeLabel;
     private javax.swing.JLabel employeesignupLabel;
     private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

@@ -22,12 +22,11 @@ public class LoginForm extends javax.swing.JFrame {
      */
     public LoginForm() {
         initComponents();
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
-        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt)))
-        .start();
-        dateandtimeLabel.setText(LocalDateTime.now().format(fmt));
-        setLocationRelativeTo(null);
-        signupLabel.setText("<html><u>" + signupLabel.getText() + "</u></html>");
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a"); // fetches date and time with format, placed into fmt 
+        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt))).start(); // starts timer, every 60k ms = 1 minute, every minute it activates it fetches data and sets it to the label
+        dateandtimeLabel.setText(LocalDateTime.now().format(fmt)); // sets the time when program is run
+        setLocationRelativeTo(null); // centers the form
+        signupLabel.setText("<html><u>" + signupLabel.getText() + "</u></html>"); //makes the label have an underline
         
 
     }
@@ -52,11 +51,11 @@ public class LoginForm extends javax.swing.JFrame {
         dateandtimeLabel = new javax.swing.JLabel();
         signupLabel = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(700, 500));
         setMinimumSize(new java.awt.Dimension(700, 500));
-        setPreferredSize(new java.awt.Dimension(700, 500));
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
@@ -113,58 +112,67 @@ public class LoginForm extends javax.swing.JFrame {
         getContentPane().add(signupLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 400, -1, 20));
 
         jPanel1.setBackground(new java.awt.Color(87, 87, 87));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/librarymanagementsystem/logo.png"))); // NOI18N
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 60, -1, -1));
+
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 500));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void signupLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_signupLabelMouseClicked
-        this.dispose();
-        UserSignupForm USUForm = new UserSignupForm();
-        USUForm.setVisible(true);
+        this.dispose(); // removes current form
+        UserSignupForm USUForm = new UserSignupForm(); // sets USUForm variable to store the specified form for redirection
+        USUForm.setVisible(true); // makes form visible
     }//GEN-LAST:event_signupLabelMouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    String id = txtID.getText().trim();
-    String password = new String(txtPassword.getPassword());
+    String id = txtID.getText().trim(); // fetches user input in text field
+    String password = new String(txtPassword.getPassword()); // fetches user input in password field
 
-    if (id.isEmpty() || password.isEmpty()) {
+    if (id.isEmpty() || password.isEmpty()) { //if either fields are empty, sends an error message
         JOptionPane.showMessageDialog(
                 this,
                 "Please enter ID and Password",
                 "Missing Input",
                 JOptionPane.ERROR_MESSAGE
         );
-        return;
+        return; // stop processing and exit the method
+
     }
 
-    String url = "jdbc:mysql://localhost:3306/lbs";
-    String user = "root";
-    String pass = "MySQLPW_1234";
+    String url = "jdbc:mysql://localhost:3306/lbs"; // stores database url
+    String user = "root"; // stores database password
+    String pass = "MySQLPW_1234"; // stores database password
 
-    try (Connection conn = DriverManager.getConnection(url, user, pass)) {
-
+    try (Connection conn = DriverManager.getConnection(url, user, pass)) { // opens db connection
+        
+        // whole sql prompt to verify user info
         String studentSQL =
                 "SELECT StudentID, StudentName FROM Students WHERE StudentID = ? AND Password = ?";
 
         try (PreparedStatement pst = conn.prepareStatement(studentSQL)) {
-            pst.setString(1, id);
-            pst.setString(2, password);
-
-            try (ResultSet rs = pst.executeQuery()) {
-                if (rs.next()) {
-                    SessionManager.userID = rs.getString("StudentID");
-                    SessionManager.userName = rs.getString("StudentName");
-                    SessionManager.role = "Student";
-
+            pst.setString(1, id); // Sets the StudentID parameter
+            pst.setString(2, password); // Sets the Password parameter
+ 
+            try (ResultSet rs = pst.executeQuery()) { // executes query, stores results
+                if (rs.next()) { //if user exists
+                    SessionManager.userID = rs.getString("StudentID"); // stores user's ID
+                    SessionManager.userName = rs.getString("StudentName"); //stores user's name
+                    
+                    // show message dialog
                     JOptionPane.showMessageDialog(this, "Welcome, " + SessionManager.userName + "!");
+                    // redirection block
                     this.dispose();
                     new UserHomePage().setVisible(true);
                     return;
                 }
             }
         }
-
+        
+        // same thing as the one above, this is for Employees login
         String employeeSQL =
                 "SELECT EmployeeID, EmployeeName FROM Employees WHERE EmployeeID = ? AND Password = ?";
 
@@ -176,7 +184,6 @@ public class LoginForm extends javax.swing.JFrame {
                 if (rs.next()) {
                     SessionManager.userID = rs.getString("EmployeeID");
                     SessionManager.userName = rs.getString("EmployeeName");
-                    SessionManager.role = "Admin";
 
                     JOptionPane.showMessageDialog(this, "Welcome, " + SessionManager.userName + "!");
                     this.dispose();
@@ -186,14 +193,15 @@ public class LoginForm extends javax.swing.JFrame {
                 }
             }
         }
-
-        JOptionPane.showMessageDialog(
-                this,
+        
+        // if both are tried without matches, show message dialog
+        JOptionPane.showMessageDialog(this,
                 "Invalid ID or Password",
                 "Login Failed",
                 JOptionPane.ERROR_MESSAGE
         );
-
+    
+// if database error occurs, show message dialog
     } catch (SQLException ex) {
         JOptionPane.showMessageDialog(
                 this,
@@ -246,6 +254,7 @@ public class LoginForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel dateandtimeLabel;
     private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

@@ -55,6 +55,7 @@ public class EmployeeSignupForm extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         loginLabel = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(700, 500));
@@ -125,6 +126,11 @@ public class EmployeeSignupForm extends javax.swing.JFrame {
         getContentPane().add(loginLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 430, -1, 20));
 
         jPanel1.setBackground(new java.awt.Color(87, 87, 87));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/librarymanagementsystem/logo.png"))); // NOI18N
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 60, -1, -1));
+
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 500));
 
         pack();
@@ -245,6 +251,7 @@ public class EmployeeSignupForm extends javax.swing.JFrame {
     private javax.swing.JLabel dateandtimeLabel;
     private javax.swing.JLabel employeesignupLabel;
     private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
