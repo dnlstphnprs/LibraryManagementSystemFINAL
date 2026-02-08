@@ -29,6 +29,8 @@ public class BorrowBooks extends javax.swing.JFrame {
     /**
      * Creates new form LoginForm
      */
+    
+    // variables to be used, empty by default
     private int selectedBookID = -1;
     private String selectedBookName = null;
     private int selectedAvailableCopies = 0;
@@ -55,11 +57,12 @@ public class BorrowBooks extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JSeparator();
         dateandtimeLabel = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        btnBorrow = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         BookTable = new javax.swing.JTable();
-        jPanel1 = new javax.swing.JPanel();
+        btnBorrow = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(700, 500));
@@ -76,15 +79,6 @@ public class BorrowBooks extends javax.swing.JFrame {
         jLabel4.setText("Library Management System");
         getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, -1, -1));
 
-        btnBorrow.setFont(new java.awt.Font("MS Reference Sans Serif", 1, 14)); // NOI18N
-        btnBorrow.setText("Borrow Book");
-        btnBorrow.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBorrowActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnBorrow, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 290, 170, 40));
-
         jButton1.setFont(new java.awt.Font("MS Reference Sans Serif", 1, 14)); // NOI18N
         jButton1.setText("Return");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -93,6 +87,10 @@ public class BorrowBooks extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 460, -1, -1));
+
+        jPanel1.setBackground(new java.awt.Color(87, 87, 87));
+        jPanel1.setForeground(new java.awt.Color(255, 255, 255));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         BookTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -112,16 +110,26 @@ public class BorrowBooks extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(BookTable);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 80, 530, 200));
+        jScrollPane2.setViewportView(jScrollPane1);
 
-        jPanel1.setBackground(new java.awt.Color(87, 87, 87));
-        jPanel1.setForeground(new java.awt.Color(255, 255, 255));
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 100, 530, 140));
+
+        btnBorrow.setFont(new java.awt.Font("MS Reference Sans Serif", 1, 14)); // NOI18N
+        btnBorrow.setText("Borrow Book");
+        btnBorrow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBorrowActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnBorrow, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 250, 170, 40));
+
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 500));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void BookTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BookTableMouseClicked
+        // when table is clicked, it selects that row and fetches data and assigns it to the respective variables 
         int row = BookTable.getSelectedRow();
         if (row >= 0) {
         selectedBookID = Integer.parseInt(BookTable.getValueAt(row, 0).toString());
@@ -131,75 +139,93 @@ public class BorrowBooks extends javax.swing.JFrame {
     }//GEN-LAST:event_BookTableMouseClicked
 
     private void btnBorrowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrowActionPerformed
+        // if user hasn't selected a book
         if (selectedBookName == null || SessionManager.userName == null) {
             JOptionPane.showMessageDialog(this, "Please select a book to borrow.");
             return;
         }
-
+        
+        // assigns selectedBookName and user's saved user name to new variables
         String bookName = selectedBookName;
         String studentName = SessionManager.userName;
-
+        
+        // fetched date today, and adds 7 days for the due date
         String today = java.time.LocalDate.now().toString();
         String dueDate = java.time.LocalDate.now().plusDays(7).toString();
-
+        
+        // if they can borrow books
         if (canBorrow(studentName)) {
-            borrowBook(bookName, studentName, today, dueDate);
-        } else {
+            borrowBook(bookName, studentName, today, dueDate); // borrow the book then save transaction
+        } else { // show error message if they already borrowed 3 books 
             JOptionPane.showMessageDialog(this, "This student has already borrowed 3 books. They cannot borrow more.");
         }
     }//GEN-LAST:event_btnBorrowActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // redirection block
         this.dispose();
         UserHomePage UHPForm = new UserHomePage();
         UHPForm.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
     
     private void borrowBook(String bookName, String studentName, String dateBorrowed, String dueDate) {
+        // SQL prompt for values insertion
         String insertQuery = "INSERT INTO BorrowedBooks (BookName, StudentName, DateBorrowed, DueDate) VALUES (?, ?, ?, ?)";
+        // sql prompt to update book inventory record for increment and decrement
         String updateQuery = "UPDATE BookInventory SET AvailableCopies = AvailableCopies - 1, BorrowedCopies = BorrowedCopies + 1 WHERE BookName = ? AND AvailableCopies > 0";
-
+        
+        // attempts database connect
         try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/lbs", "root", "MySQLPW_1234");
+            // places SQL prompt into prepared statement for insertion
             PreparedStatement insertStmt = connection.prepareStatement(insertQuery);
+            // places SQL prompt into prepared statement to update records
             PreparedStatement updateStmt = connection.prepareStatement(updateQuery)) {
-
+            
+            // fetches all values in records when user clicks 
             insertStmt.setString(1, bookName);
             insertStmt.setString(2, studentName);
             insertStmt.setString(3, dateBorrowed);
             insertStmt.setString(4, dueDate);
-            int rowsInserted = insertStmt.executeUpdate();
-
+            int rowsInserted = insertStmt.executeUpdate(); // executes insert query
+        // if borrowing record was succeccfully isnerted
         if (rowsInserted > 0) {
-            updateStmt.setString(1, bookName);
-            int rowsAffected = updateStmt.executeUpdate();
-
+            updateStmt.setString(1, bookName); // set book name to update inventory
+            int rowsAffected = updateStmt.executeUpdate(); // execute update inventory
+            
+            // if update is successful, send message dialog
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(this, "Book successfully borrowed and inventory updated!");
-            } else {
+            } else { // if unsuccessfull, send error dialog
                 JOptionPane.showMessageDialog(this, "Error: No available copies of this book.");
             }
-        } else {
+        } else { // if other error occur
             JOptionPane.showMessageDialog(this, "An error occurred while borrowing the book.");
         }
-
+        // if any database error occurs
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage());
         }
     }
+    
     private boolean canBorrow(String studentName) {
+        // SQL query to fetch user's record
         String query = "SELECT COUNT(*) FROM BorrowedBooks WHERE StudentName = ?";
+        // attempts database connection
         try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/lbs", "root", "MySQLPW_1234");
-            PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, studentName);
-            ResultSet rs = stmt.executeQuery();
+                // places query to stmt to fetch data 
+                PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, studentName); // sets first paramater as studentName
+            ResultSet rs = stmt.executeQuery(); // executes program
+        // Move the cursor to the first (and only) row of the result
         if (rs.next()) {
-            int count = rs.getInt(1);
-            return count < 3;
+            int count = rs.getInt(1); // get number of borrowed books
+            return count < 3; //return true if they've borrowed less than 3
         }
+        // error message if database error occurs
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
         }
-        return false;
+        return false; //if limit is reach, return false
     }
     /**
      * @param args the command line arguments
@@ -280,6 +306,7 @@ public class BorrowBooks extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
 }

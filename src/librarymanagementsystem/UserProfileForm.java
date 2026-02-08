@@ -150,10 +150,9 @@ public class UserProfileForm extends javax.swing.JFrame {
         SessionManager.userID = null; // removes saved data from login
         SessionManager.userName = null; // removes saved data from login
         
-        // redirection block
-        this.dispose();
-        LoginForm login = new LoginForm();
-        login.setVisible(true);
+        this.dispose(); // removes current form
+        LoginForm login = new LoginForm(); // sets USUForm variable to store the specified form for redirection
+        login.setVisible(true); // makes new form visible
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -206,21 +205,24 @@ public class UserProfileForm extends javax.swing.JFrame {
             PreparedStatement pst = con.prepareStatement(sql); // puts sql prompt into prepared statement
             pst.setString(1, SessionManager.userID); // sets first parameter as the user's saved login ID
 
-            ResultSet rs = pst.executeQuery(); // 
-
+            ResultSet rs = pst.executeQuery(); // Execute SQL Query, get results
+            
+            // Create table model
             DefaultTableModel model = new DefaultTableModel() {
                 @Override
                 public boolean isCellEditable(int row, int column) {
-                    return false;
+                    return false; // makes editing not possible
                 }
             };
-
+            
+            // defines each columnb to display
             model.addColumn("BookName");
             model.addColumn("DateBorrowed");
             model.addColumn("DueDate");
             model.addColumn("ReturnDate");
             model.addColumn("Penalty");
             
+            // loop through each row and add to table model
             while (rs.next()) {
                 model.addRow(new Object[]{
                     rs.getString("BookName"),
@@ -230,11 +232,11 @@ public class UserProfileForm extends javax.swing.JFrame {
                     rs.getDouble("Penalty")
                 });
             }
-
+            // set model to existing table
             MyTransactionsTable.setModel(model);
-
+             // column adjustment based on content
             for (int col = 0; col < MyTransactionsTable.getColumnCount(); col++) {
-                int width = 50;
+                int width = 50; // the minimum width
                 for (int row = 0; row < MyTransactionsTable.getRowCount(); row++) {
                     TableCellRenderer renderer = MyTransactionsTable.getCellRenderer(row, col);
                     Component comp = MyTransactionsTable.prepareRenderer(renderer, row, col);
@@ -242,7 +244,7 @@ public class UserProfileForm extends javax.swing.JFrame {
                 }
                 MyTransactionsTable.getColumnModel().getColumn(col).setPreferredWidth(width);
             }
-            
+        // error mesasge if database error occurs    
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this,
                     "Database error: " + e.getMessage(),

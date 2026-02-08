@@ -72,6 +72,8 @@ public class UserHomePage extends javax.swing.JFrame {
 
         btnProfile.setFont(new java.awt.Font("MS Reference Sans Serif", 1, 14)); // NOI18N
         btnProfile.setText("Profile Info");
+        btnProfile.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        btnProfile.setIconTextGap(5);
         btnProfile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnProfileActionPerformed(evt);

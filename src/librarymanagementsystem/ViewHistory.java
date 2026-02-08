@@ -15,8 +15,6 @@ import java.sql.SQLException;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Component;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 /**
  *
  * @author Daeniel Presa
@@ -32,12 +30,12 @@ public class ViewHistory extends javax.swing.JFrame {
     
     public ViewHistory() {
         initComponents();
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
-        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt)))
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a"); // assigns date and time format
+        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt))) // timer every minute triggers and updates
         .start();
-        dateandtimeLabel.setText(LocalDateTime.now().format(fmt));
-        loadHistory();
-        setLocationRelativeTo(null);
+        dateandtimeLabel.setText(LocalDateTime.now().format(fmt)); // sets current date when running the program
+        loadHistory(); // loads table
+        setLocationRelativeTo(null); // sets form location to the center
     }
     
 
@@ -103,11 +101,6 @@ public class ViewHistory extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        HistoryTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                HistoryTableMouseClicked(evt);
-            }
-        });
         jScrollPane1.setViewportView(HistoryTable);
 
         jScrollPane3.setViewportView(jScrollPane1);
@@ -121,17 +114,9 @@ public class ViewHistory extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void HistoryTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_HistoryTableMouseClicked
-        int row = HistoryTable.getSelectedRow();
-        if (row >= 0) {
-        selectedBookID = (int) HistoryTable.getValueAt(row, 0);
-        selectedAvailableCopies = (int) HistoryTable.getValueAt(row, 2);
-        selectedBookName = HistoryTable.getValueAt(row, 1).toString();
-        }
-    }//GEN-LAST:event_HistoryTableMouseClicked
    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // redirection block
         this.dispose();
         EmployeeHomePage EHPForm = new EmployeeHomePage();
         EHPForm.setVisible(true);
@@ -148,22 +133,25 @@ public class ViewHistory extends javax.swing.JFrame {
         });
     }
     private void loadHistory() {
+        // attempt database connection
         try (Connection con = DriverManager.getConnection(
             "jdbc:mysql://localhost:3306/lbs",
             "root",
             "MySQLPW_1234")) {
-
+        // SQL query prompt in fetching data
         String sql = "SELECT * FROM TransactionHistory";
-        PreparedStatement pst = con.prepareStatement(sql);
-        ResultSet rs = pst.executeQuery();
-
+        PreparedStatement pst = con.prepareStatement(sql); // stores query in a prepared statement
+        ResultSet rs = pst.executeQuery(); // executes query
+        
+        // creates new model for table
         DefaultTableModel model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column != 0;
+                return column != 0; // disables editing
             }
         };
-
+        
+        // defines all table columns
         model.addColumn("TransactionID");
         model.addColumn("StudentID");
         model.addColumn("BookName");
@@ -171,8 +159,9 @@ public class ViewHistory extends javax.swing.JFrame {
         model.addColumn("DueDate");
         model.addColumn("ReturnDate");
         model.addColumn("Penalty");
-
+        
         int rowCount = 0;
+        // loop thru all rs and add each record to the model
         while (rs.next()) {
             model.addRow(new Object[]{
                     rs.getInt("TransactionID"),
@@ -185,17 +174,20 @@ public class ViewHistory extends javax.swing.JFrame {
             });
             rowCount++;
         }
-
+        
+        // if no transaction records exists, send message dialog
         if (rowCount == 0) {
             JOptionPane.showMessageDialog(null,
                     "No transaction history records found.",
                     "Info",
                     JOptionPane.INFORMATION_MESSAGE);
         }
-
+        
+        // apply model to existing tbale
         HistoryTable.setModel(model);
         HistoryTable.setAutoResizeMode(HistoryTable.AUTO_RESIZE_OFF);
-
+        
+        // automatically resizes columns based on content
         if (rowCount > 0) {
             for (int col = 0; col < HistoryTable.getColumnCount(); col++) {
                 int maxWidth = 50;
@@ -205,7 +197,7 @@ public class ViewHistory extends javax.swing.JFrame {
                     Component comp = HistoryTable.prepareRenderer(renderer, row, col);
                     maxWidth = Math.max(comp.getPreferredSize().width + 10, maxWidth);
                 }
-
+                // calculated width based on column headers
                 TableCellRenderer headerRenderer = HistoryTable.getTableHeader().getDefaultRenderer();
                 Component headerComp = headerRenderer.getTableCellRendererComponent(
                         HistoryTable,
@@ -213,11 +205,12 @@ public class ViewHistory extends javax.swing.JFrame {
                         false, false, 0, col
                 );
                 maxWidth = Math.max(maxWidth, headerComp.getPreferredSize().width + 10);
-
+                
+                // apply calculated width to column
                 HistoryTable.getColumnModel().getColumn(col).setPreferredWidth(maxWidth);
             }
         }
-
+    // error message occurs if any database error occurs
     } catch (SQLException e) {
         JOptionPane.showMessageDialog(
                 null,

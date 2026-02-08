@@ -118,7 +118,7 @@ public class ReturnBooks extends javax.swing.JFrame {
 
         jScrollPane3.setViewportView(jScrollPane1);
 
-        jPanel2.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 70, 450, 110));
+        jPanel2.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 100, 490, 110));
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 500));
 
@@ -287,7 +287,6 @@ public class ReturnBooks extends javax.swing.JFrame {
             }
         };
 
-        model.addColumn("BorrowID");
         model.addColumn("BookName");
         model.addColumn("StudentName");
         model.addColumn("DateBorrowed");
@@ -295,7 +294,6 @@ public class ReturnBooks extends javax.swing.JFrame {
 
         while (rs.next()) {
             model.addRow(new Object[]{
-                rs.getInt("BorrowID"),
                 rs.getString("BookName"),
                 rs.getString("StudentName"),
                 rs.getTimestamp("DateBorrowed"),
