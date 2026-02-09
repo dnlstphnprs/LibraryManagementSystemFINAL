@@ -29,9 +29,8 @@ public class AddBookDialog extends javax.swing.JDialog {
     public AddBookDialog(java.awt.Frame parent, boolean modal) {
         initComponents();
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
-        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt)))
-        .start();
-        dateandtimeLabel.setText(LocalDateTime.now().format(fmt));
+        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt))).start(); // starts timer that updates label every minute with current date and time
+        dateandtimeLabel.setText(LocalDateTime.now().format(fmt)); // sets date and time to label
     }
 
     /**
@@ -128,11 +127,12 @@ public class AddBookDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddBookActionPerformed
+        // get user input values
         String bookName = txtBookName.getText().trim();
         String author = txtBookAuthor.getText().trim();
         String yearStr = txtYearPurchased.getText().trim();
         String copiesStr = txtAvailableCopies.getText().trim();
-
+        // checks for empty fields
         if (bookName.isEmpty() || author.isEmpty() || yearStr.isEmpty() || copiesStr.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please fill in all fields.");
             return;
@@ -140,32 +140,37 @@ public class AddBookDialog extends javax.swing.JDialog {
 
         int year, copies;
         try {
+            // convert years and copies to numbers
             year = Integer.parseInt(yearStr);
             copies = Integer.parseInt(copiesStr);
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Year and copies must be numeric.");
             return;
         }
-
+        // connects to database
         try (Connection con = DriverManager.getConnection(
             "jdbc:mysql://localhost:3306/lbs",
             "root",
             "MySQLPW_1234")) {
-
+            // sql query used in inserting records
             String sql = "INSERT INTO BookInventory (BookName, Author, YearPurchased, AvailableCopies) VALUES (?, ?, ?, ?)";
-            PreparedStatement pst = con.prepareStatement(sql);
+            PreparedStatement pst = con.prepareStatement(sql); // stores query in prepared statement
+            
+            // adds all values as WHERE parameters
             pst.setString(1, bookName);
             pst.setString(2, author);
             pst.setInt(3, year);
             pst.setInt(4, copies);
             pst.executeUpdate();
-
+            
+            // Success Message
             JOptionPane.showMessageDialog(this, "Book added successfully.");
+            // clears text fields
             txtBookName.setText("");
             txtBookAuthor.setText("");
             txtYearPurchased.setText("");
             txtAvailableCopies.setText("");
-
+            // if database error occurs
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage());
         }

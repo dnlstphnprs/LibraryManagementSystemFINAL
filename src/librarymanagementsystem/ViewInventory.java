@@ -33,17 +33,16 @@ public class ViewInventory extends javax.swing.JFrame {
 
     public ViewInventory() {
         initComponents();
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
-        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt)))
-        .start();
-        dateandtimeLabel.setText(LocalDateTime.now().format(fmt));
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a"); // fetches date time format
+        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt))).start(); // starts timer that updates label every minute with current date and time
+        dateandtimeLabel.setText(LocalDateTime.now().format(fmt)); // sets date and time to label
         loadBooks();
-        setLocationRelativeTo(null);
-        
+        setLocationRelativeTo(null); // centers form
+        // opens book dialog
         btnAddBook.addActionListener(e -> {
             AddBookDialog dialog = new AddBookDialog(this, true);
-            dialog.setLocationRelativeTo(this);
-            dialog.setVisible(true);
+            dialog.setLocationRelativeTo(this); // makes dialog centered
+            dialog.setVisible(true); // makes dialog visible
         });
     }
     
