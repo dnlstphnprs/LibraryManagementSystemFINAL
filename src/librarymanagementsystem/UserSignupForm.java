@@ -23,13 +23,12 @@ public class UserSignupForm extends javax.swing.JFrame {
      */
     public UserSignupForm() {
         initComponents();
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a"); // fetches date and time with format, placed into fmt 
-        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt))).start(); // starts timer, every 60k ms = 1 minute, every minute it activates it fetches data and sets it to the label
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a"); // fetches date and time format, placed into fmt 
+        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt))).start(); // sets timer for every 60 seconds, it updates the label
         dateandtimeLabel.setText(LocalDateTime.now().format(fmt)); // sets the time when program is run
         setLocationRelativeTo(null); // centers the form
-        // both makes label have an underline
-        employeesignupLabel.setText("<html><u>" + employeesignupLabel.getText() + "</u></html>");
-        loginLabel.setText("<html><u>" + loginLabel.getText() + "</u></html>");
+        employeesignupLabel.setText("<html><u>" + employeesignupLabel.getText() + "</u></html>"); // makes label have underlined text
+        loginLabel.setText("<html><u>" + loginLabel.getText() + "</u></html>"); // makes label have underlined text
     }
 
     /**
@@ -142,13 +141,14 @@ public class UserSignupForm extends javax.swing.JFrame {
         String password = new String(txtPassword.getPassword()); // fetches text field contents
 
         String regex = "\\d{4}-\\d{7}"; // password pattern for user name (Example: 2025-1234567)
-
-        if (!Pattern.matches(regex, studentID)) { //if pattern doesn't match the user input in text field, send error message
+        
+        //if pattern doesn't match the user input in text field, send error message
+        if (!Pattern.matches(regex, studentID)) { 
             JOptionPane.showMessageDialog(this, "Student ID must be in format YYYY-1234567", "Invalid ID", JOptionPane.ERROR_MESSAGE);
             return;
         }
-
-        if (studentName.isEmpty() || password.isEmpty()) { // if fields are empty, send error message
+        // if fields are empty, send error message
+        if (studentName.isEmpty() || password.isEmpty()) { 
             JOptionPane.showMessageDialog(this, "Please fill all fields",
                                           "Empty Fields", JOptionPane.ERROR_MESSAGE);
             return;
@@ -171,22 +171,22 @@ public class UserSignupForm extends javax.swing.JFrame {
         String user = "root"; // stores database password
         String pass = "MySQLPW_1234"; // stores database password
         
-        // SQL Prompt for inserting Students if all requirements are met, values are blank as default
+        // SQL Prompt for inserting Students if all requirements are met, values inserted later
         String sql = "INSERT INTO Students (StudentID, StudentName, Password) VALUES (?, ?, ?)";
 
         try (Connection conn = DriverManager.getConnection(url, user, pass); // makes a connection with the database
-             PreparedStatement pst = conn.prepareStatement(sql)) { // has the sql prompt for values insertion
+             PreparedStatement pst = conn.prepareStatement(sql)) { // stores the sql prompt for values insertion
 
             pst.setString(1, studentID); // set first value as student id 
             pst.setString(2, studentName); // set second value as student name
             pst.setString(3, password); // set first value as password
-            pst.executeUpdate(); // executes prompt
+            pst.executeUpdate(); // executes sql prompt
             
             // message dialog for successful signup
             JOptionPane.showMessageDialog(this, "Sign up successful!");
-            this.dispose();
-            LoginForm LForm = new LoginForm();
-            LForm.setVisible(true);
+            this.dispose(); // clears current form
+            LoginForm LForm = new LoginForm(); // sets LForm variable to store the specified form for redirection
+            LForm.setVisible(true); // makes form visible
 
         } catch (SQLException ex) { // catches all errors
             if (ex.getErrorCode() == 1062) { // student already exists, show error message
@@ -200,17 +200,15 @@ public class UserSignupForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void employeesignupLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_employeesignupLabelMouseClicked
-        // redirection block
-        this.dispose();
-        EmployeeSignupForm ESUForm = new EmployeeSignupForm();
-        ESUForm.setVisible(true);
+        this.dispose(); // removes current form
+        EmployeeSignupForm ESUForm = new EmployeeSignupForm(); // sets ESUForm variable to store the specified form for redirection
+        ESUForm.setVisible(true); // makes form visible
     }//GEN-LAST:event_employeesignupLabelMouseClicked
 
     private void loginLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginLabelMouseClicked
-        // redirection block
-        this.dispose();
-        LoginForm LForm = new LoginForm();
-        LForm.setVisible(true);
+        this.dispose(); // removes current form
+        LoginForm LForm = new LoginForm(); // sets LForm variable to store the specified form for redirection
+        LForm.setVisible(true); // makes form visible
     }//GEN-LAST:event_loginLabelMouseClicked
 
     /**

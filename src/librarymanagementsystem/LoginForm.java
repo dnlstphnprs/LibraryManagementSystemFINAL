@@ -22,11 +22,11 @@ public class LoginForm extends javax.swing.JFrame {
      */
     public LoginForm() {
         initComponents();
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a"); // fetches date and time with format, placed into fmt 
-        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt))).start(); // starts timer, every 60k ms = 1 minute, every minute it activates it fetches data and sets it to the label
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a"); // fetches date and time format, placed into fmt 
+        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt))).start(); // sets timer for every 60 seconds, it updates the label
         dateandtimeLabel.setText(LocalDateTime.now().format(fmt)); // sets the time when program is run
         setLocationRelativeTo(null); // centers the form
-        signupLabel.setText("<html><u>" + signupLabel.getText() + "</u></html>"); //makes the label have an underline
+        signupLabel.setText("<html><u>" + signupLabel.getText() + "</u></html>"); // makes the label have an underline
         
 
     }
@@ -154,15 +154,15 @@ public class LoginForm extends javax.swing.JFrame {
                 "SELECT StudentID, StudentName FROM Students WHERE StudentID = ? AND Password = ?";
 
         try (PreparedStatement pst = conn.prepareStatement(studentSQL)) {
-            pst.setString(1, id); // Sets the StudentID parameter
-            pst.setString(2, password); // Sets the Password parameter
+            pst.setString(1, id); // Sets the StudentID as first parameter
+            pst.setString(2, password); // Sets the Password as second parameter
  
             try (ResultSet rs = pst.executeQuery()) { // executes query, stores results
                 if (rs.next()) { //if user exists
                     SessionManager.userID = rs.getString("StudentID"); // stores user's ID
                     SessionManager.userName = rs.getString("StudentName"); //stores user's name
                     
-                    // show message dialog
+                    // show successful login message dialog
                     JOptionPane.showMessageDialog(this, "Welcome, " + SessionManager.userName + "!");
                     // redirection block
                     this.dispose();
@@ -172,23 +172,23 @@ public class LoginForm extends javax.swing.JFrame {
             }
         }
         
-        // same thing as the one above, this is for Employees login
+        // whole sql prompt to verify user info
         String employeeSQL =
                 "SELECT EmployeeID, EmployeeName FROM Employees WHERE EmployeeID = ? AND Password = ?";
 
         try (PreparedStatement pst = conn.prepareStatement(employeeSQL)) {
-            pst.setString(1, id);
-            pst.setString(2, password);
+            pst.setString(1, id); // Sets the StudentID as first parameter
+            pst.setString(2, password); // Sets the Password as second parameter
 
-            try (ResultSet rs = pst.executeQuery()) {
-                if (rs.next()) {
-                    SessionManager.userID = rs.getString("EmployeeID");
-                    SessionManager.userName = rs.getString("EmployeeName");
-
+            try (ResultSet rs = pst.executeQuery()) { // executes query, stores results
+                if (rs.next()) { // if employee exists
+                    SessionManager.userID = rs.getString("EmployeeID"); // stores user's ID
+                    SessionManager.userName = rs.getString("EmployeeName"); // stores user's name
+                    // show successful message dialog 
                     JOptionPane.showMessageDialog(this, "Welcome, " + SessionManager.userName + "!");
-                    this.dispose();
-                    EmployeeHomePage EHPForm = new EmployeeHomePage();
-                    EHPForm.setVisible(true);
+                    this.dispose(); // removes current form 
+                    EmployeeHomePage EHPForm = new EmployeeHomePage(); // sets EHPForm variable to store the specified form for redirection
+                    EHPForm.setVisible(true); // makes form visible
                     return;
                 }
             }

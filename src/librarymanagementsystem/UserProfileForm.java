@@ -27,11 +27,10 @@ public class UserProfileForm extends javax.swing.JFrame {
      */
     public UserProfileForm() {
         initComponents();
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
-        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt)))
-        .start();
-        setLocationRelativeTo(null);
-        dateandtimeLabel.setText(LocalDateTime.now().format(fmt));
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a"); // fetches date and time format, placed into fmt 
+        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt))).start(); // sets timer for every 60 seconds, it updates the label
+        setLocationRelativeTo(null); // sets form's location to the center
+        dateandtimeLabel.setText(LocalDateTime.now().format(fmt)); // sets current date and time with format to label
         loadUserTransactions(); // executes Loading User Transaction method
         jTextField2.setText(SessionManager.userName); // fetches data from session manager, sets to text box
         jTextField1.setText(SessionManager.userID); // fetches data from session mana, sets to text box
@@ -194,7 +193,7 @@ public class UserProfileForm extends javax.swing.JFrame {
     
     // table loading method
     private void loadUserTransactions() {
-        // attempts to make database connection
+        // connects to data bases
         try (Connection con = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/lbs", 
                 "root", 

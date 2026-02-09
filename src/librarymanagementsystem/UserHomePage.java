@@ -26,13 +26,12 @@ public class UserHomePage extends javax.swing.JFrame {
      */
     public UserHomePage() {
         initComponents();
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
-        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt)))
-        .start();
-        dateandtimeLabel.setText(LocalDateTime.now().format(fmt));
-        setLocationRelativeTo(null);
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a"); // fetches date and time with format, placed into fmt 
+        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt))).start(); // starts timer, every 60k ms = 1 minute, every minute it activates it fetches data and sets it to the label
+        dateandtimeLabel.setText(LocalDateTime.now().format(fmt)); // sets the date and time to label before update
+        setLocationRelativeTo(null); // sets form location to center
         SwingUtilities.invokeLater(() -> {
-        checkOverdueBooks();
+        checkOverdueBooks(); // calls method that checks overdue books
         });
     }
 
@@ -104,28 +103,43 @@ public class UserHomePage extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    // checks students if they have overdue borrowed books
     private void checkOverdueBooks(){
+        
+// connect to database
         try (Connection conn = DriverManager.getConnection(
             "jdbc:mysql://localhost:3306/lbs",
             "root",
             "MySQLPW_1234")) {
-
+        
+        // SQL query to fetch user's record
         String sql = "SELECT BookName, DueDate FROM BorrowedBooks WHERE StudentName = ?";
         PreparedStatement pst = conn.prepareStatement(sql);
+        
+        // set currently logged in user as teh first parameter
         pst.setString(1, SessionManager.userName);
 
         ResultSet rs = pst.executeQuery();
-
+        
+        // string builder to add overdue book info
         StringBuilder overdueBooks = new StringBuilder();
+        
+        // fetcehes today's date for comparison
         Date today = new Date();
-
+        
+        // loop through all the borrowed books returned by the query
         while (rs.next()) {
+            // fetch book name and due date
             String bookName = rs.getString("BookName");
             Date dueDate = rs.getDate("DueDate");
-
+            
+            // calculate teh difference between tiday and the due date in milliseconds
             long diffMillis = today.getTime() - dueDate.getTime();
+            // convert milliseconds to days
+            
             long daysOverdue = TimeUnit.MILLISECONDS.toDays(diffMillis);
-
+            
+            // If the book is overdue, add it to the message
             if (daysOverdue > 0) {
                 overdueBooks.append(bookName)
                             .append(" - overdue by ")
@@ -133,7 +147,8 @@ public class UserHomePage extends javax.swing.JFrame {
                             .append(" day(s)\n");
             }
         }
-
+        
+        // If there are overdue books, display a warning dialog
         if (overdueBooks.length() > 0) {
             JOptionPane.showMessageDialog(
                     this,
@@ -142,27 +157,28 @@ public class UserHomePage extends javax.swing.JFrame {
                     JOptionPane.WARNING_MESSAGE
             );
         }
-
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage());
-    }
+        
+        // shows error message if database error occurs
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage());
+        }
     }
     private void btnProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProfileActionPerformed
-        this.dispose();
-        UserProfileForm UPForm = new UserProfileForm();
-        UPForm.setVisible(true);
+        this.dispose(); // removes current form
+        UserProfileForm UPForm = new UserProfileForm(); // sets LForm variable to store the specified form for redirection
+        UPForm.setVisible(true); // makes form visible
     }//GEN-LAST:event_btnProfileActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        this.dispose();
-        ReturnBooks RBForm = new ReturnBooks();
-        RBForm.setVisible(true);
+        this.dispose(); // removes current form
+        ReturnBooks RBForm = new ReturnBooks(); //sets RBForm variable to store the specified form for redirection
+        RBForm.setVisible(true); // makes form visible
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        this.dispose();
-        BorrowBooks BBForm = new BorrowBooks();
-        BBForm.setVisible(true);
+        this.dispose(); // removes current form
+        BorrowBooks BBForm = new BorrowBooks(); //sets BBForm variable to store the specified form for redirection
+        BBForm.setVisible(true); // makes form visble
     }//GEN-LAST:event_jButton4ActionPerformed
     
     /**

@@ -117,7 +117,7 @@ public class ViewInventory extends javax.swing.JFrame {
 
         jScrollPane2.setViewportView(jScrollPane1);
 
-        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 70, 490, 180));
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 70, 630, 180));
 
         btnAddBook.setText("Add new book record");
         btnAddBook.addActionListener(new java.awt.event.ActionListener() {
@@ -151,7 +151,7 @@ public class ViewInventory extends javax.swing.JFrame {
         });
         jPanel1.add(btnSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 290, 150, -1));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 500));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 710, 500));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -287,60 +287,67 @@ public class ViewInventory extends javax.swing.JFrame {
         });
     }
     private void loadBooks() {
-    try (Connection con = DriverManager.getConnection(
-            "jdbc:mysql://localhost:3306/lbs",
-            "root",
-            "MySQLPW_1234")) {
+        try (Connection con = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/lbs",
+                "root",
+                "MySQLPW_1234")) {
 
-        String sql = "SELECT * FROM BookInventory";
-        PreparedStatement pst = con.prepareStatement(sql);
-        ResultSet rs = pst.executeQuery();
+            String sql = "SELECT * FROM BookInventory";
+            PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
 
-        DefaultTableModel model = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return column != 0; // BookID not editable
+            DefaultTableModel model = new DefaultTableModel() {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return column != 0; // BookID not editable
+                }
+            };
+
+            model.addColumn("BookID");
+            model.addColumn("BookName");
+            model.addColumn("Author");
+            model.addColumn("YearPurchased");
+            model.addColumn("AvailableCopies");
+
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                        rs.getInt("BookID"),
+                        rs.getString("BookName"),
+                        rs.getString("Author"),
+                        rs.getInt("YearPurchased"),
+                        rs.getInt("AvailableCopies")
+                });
             }
-        };
 
-        model.addColumn("BookID");
-        model.addColumn("BookName");
-        model.addColumn("Author");
-        model.addColumn("YearPurchased");
-        model.addColumn("AvailableCopies");
+            BookTable.setModel(model);
+            BookTable.setAutoResizeMode(BookTable.AUTO_RESIZE_OFF);
 
-        while (rs.next()) {
-            model.addRow(new Object[]{
-                    rs.getInt("BookID"),
-                    rs.getString("BookName"),
-                    rs.getString("Author"),
-                    rs.getInt("YearPurchased"),
-                    rs.getInt("AvailableCopies")
-            });
-        }
-
-        BookTable.setModel(model);
-        BookTable.setAutoResizeMode(BookTable.AUTO_RESIZE_OFF);
+            originalBookTableData = new Object[BookTable.getRowCount()][BookTable.getColumnCount()];
+            for (int i = 0; i < BookTable.getRowCount(); i++) {
+                for (int j = 0; j < BookTable.getColumnCount(); j++) {
+                originalBookTableData[i][j] = BookTable.getValueAt(i, j);
+                }
+            }
         
-        originalBookTableData = new Object[BookTable.getRowCount()][BookTable.getColumnCount()];
-        for (int i = 0; i < BookTable.getRowCount(); i++) {
-            for (int j = 0; j < BookTable.getColumnCount(); j++) {
-            originalBookTableData[i][j] = BookTable.getValueAt(i, j);
-        }
-}
+        
+            for (int col = 0; col < BookTable.getColumnCount(); col++) {
+                int width = 50;
+                for (int row = 0; row < BookTable.getRowCount(); row++) {
+                    TableCellRenderer renderer = BookTable.getCellRenderer(row, col);
+                    Component comp = BookTable.prepareRenderer(renderer, row, col);
+                    width = Math.max(comp.getPreferredSize().width + 10, width);
+                }
 
-
-        for (int col = 0; col < BookTable.getColumnCount(); col++) {
-            int width = 50;
-            for (int row = 0; row < BookTable.getRowCount(); row++) {
-                TableCellRenderer renderer = BookTable.getCellRenderer(row, col);
-                Component comp = BookTable.prepareRenderer(renderer, row, col);
-                width = Math.max(comp.getPreferredSize().width + 10, width);
+                TableCellRenderer headerRenderer = BookTable.getTableHeader().getDefaultRenderer();
+                Component headerComp = headerRenderer.getTableCellRendererComponent(
+                        BookTable, 
+                        BookTable.getColumnName(col),
+                        false, false, 0, col
+                );
+                width = Math.max(width,headerComp.getPreferredSize().width + 10);
+                BookTable.getColumnModel().getColumn(col).setPreferredWidth(width);
             }
-            BookTable.getColumnModel().getColumn(col).setPreferredWidth(width);
-        }
-
-    } catch (SQLException e) {
+        } catch (SQLException e) {
         JOptionPane.showMessageDialog(null,
                 "Database error: " + e.getMessage(),
                 "Error",

@@ -23,13 +23,12 @@ public class EmployeeSignupForm extends javax.swing.JFrame {
      */
     public EmployeeSignupForm() {
         initComponents();
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
-        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt)))
-        .start();
-        dateandtimeLabel.setText(LocalDateTime.now().format(fmt));
-        setLocationRelativeTo(null);
-        employeesignupLabel.setText("<html><u>" + employeesignupLabel.getText() + "</u></html>");
-        loginLabel.setText("<html><u>" + loginLabel.getText() + "</u></html>");
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a"); // fetches date and time format, placed into fmt 
+        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt))).start(); // sets timer for every 60 seconds, it updates the label
+        dateandtimeLabel.setText(LocalDateTime.now().format(fmt)); // sets current date and time to label
+        setLocationRelativeTo(null); // sets form's location to center
+        employeesignupLabel.setText("<html><u>" + employeesignupLabel.getText() + "</u></html>"); // makes label have underlined text
+        loginLabel.setText("<html><u>" + loginLabel.getText() + "</u></html>"); // makes label have underlined text
     }
 
     /**
@@ -137,24 +136,25 @@ public class EmployeeSignupForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    String employeeID = txtEmployeeID.getText().trim();
-    String employeeName = txtEmployeeName.getText().trim();
-    String password = new String(txtPassword.getPassword());
-
-    String regex = "\\d{2}-\\d{7}";
-
+    String employeeID = txtEmployeeID.getText().trim(); // fetches text field contents
+    String employeeName = txtEmployeeName.getText().trim(); // fetches text field contents
+    String password = new String(txtPassword.getPassword()); // fetches text field contents
+    
+    String regex = "\\d{2}-\\d{7}"; // password pattern for user name (Example: 25-1234567)
+    
+    //if pattern doesn't match the user input in text field, send error message
     if (!Pattern.matches(regex, employeeID)) {
         JOptionPane.showMessageDialog(this, "Employee ID must be in format YYYY-1234567",
                                       "Invalid ID", JOptionPane.ERROR_MESSAGE);
         return;
     }
-
+    // if fields are empty, send error message
     if (employeeName.isEmpty() || password.isEmpty()) {
         JOptionPane.showMessageDialog(this, "Please fill all fields",
                                       "Empty Fields", JOptionPane.ERROR_MESSAGE);
         return;
     }
-    
+    // if password contains less than 8 characters, doesn't include an uppercase, lowercase, and a number, send error message
     if (password.length() < 8 ||
         !password.matches(".*[A-Z].*") ||      
         !password.matches(".*[a-z].*") ||      
@@ -167,30 +167,33 @@ public class EmployeeSignupForm extends javax.swing.JFrame {
             "Invalid Password", JOptionPane.ERROR_MESSAGE);
         return;
     }
-    String url = "jdbc:mysql://localhost:3306/lbs";
-    String user = "root";
-    String pass = "MySQLPW_1234";
-
+    
+    String url = "jdbc:mysql://localhost:3306/lbs"; // stores database url
+    String user = "root"; // stores database url
+    String pass = "MySQLPW_1234"; // stores database url
+    
+    // SQL Prompt for inserting Students if all requirements are met, values inserted later
     String sql = "INSERT INTO Employees (EmployeeID, EmployeeName, Password) VALUES (?, ?, ?)";
 
-    try (Connection conn = DriverManager.getConnection(url, user, pass);
-         PreparedStatement pst = conn.prepareStatement(sql)) {
+    try (Connection conn = DriverManager.getConnection(url, user, pass); // makes a connection with the database
+         PreparedStatement pst = conn.prepareStatement(sql)) { // stores the sql prompt for values insertion
 
-        pst.setString(1, employeeID);
-        pst.setString(2, employeeName);
-        pst.setString(3, password);
-        pst.executeUpdate();
-
+        pst.setString(1, employeeID); // set first value as employee id
+        pst.setString(2, employeeName); // set first value as student name 
+        pst.setString(3, password); // set first value as password
+        pst.executeUpdate();// executes query prompt
+        
+        // message dialog for successful signup
         JOptionPane.showMessageDialog(this, "Sign up successful!");
-        this.dispose();
-        LoginForm LForm = new LoginForm();
-        LForm.setVisible(true);
-
-    } catch (SQLException ex) {
-        if (ex.getErrorCode() == 1062) {
+        this.dispose(); // removes current form
+        LoginForm LForm = new LoginForm(); // sets LForm variable to store the specified form for redirection
+        LForm.setVisible(true); // makes form visible
+    
+    } catch (SQLException ex) { // catches all errors
+        if (ex.getErrorCode() == 1062) { // if employee already exists, send error message
             JOptionPane.showMessageDialog(this, "Student ID already exists!",
                                           "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
+        } else { // if any other databases occurs, send error message
             JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage(),
                                           "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -198,15 +201,15 @@ public class EmployeeSignupForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void loginLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginLabelMouseClicked
-        this.dispose();
-        LoginForm LForm = new LoginForm();
-        LForm.setVisible(true);
+        this.dispose(); // removes current form
+        LoginForm LForm = new LoginForm(); // sets LForm variable to store the specified form for redirection
+        LForm.setVisible(true); // makes form visiblke
     }//GEN-LAST:event_loginLabelMouseClicked
 
     private void employeesignupLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_employeesignupLabelMouseClicked
-        this.dispose();
-        UserSignupForm USUForm = new UserSignupForm();
-        USUForm.setVisible(true);
+        this.dispose(); // removes current form
+        UserSignupForm USUForm = new UserSignupForm(); // sets USUForm variable to store the specified form for redirection
+        USUForm.setVisible(true); // makes form visible
     }//GEN-LAST:event_employeesignupLabelMouseClicked
 
     /**

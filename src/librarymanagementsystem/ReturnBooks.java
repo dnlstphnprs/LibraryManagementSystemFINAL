@@ -58,8 +58,7 @@ public class ReturnBooks extends javax.swing.JFrame {
         btnReturn = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
         MyBooksTable = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -109,31 +108,14 @@ public class ReturnBooks extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        MyBooksTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                MyBooksTableMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(MyBooksTable);
+        jScrollPane2.setViewportView(MyBooksTable);
 
-        jScrollPane3.setViewportView(jScrollPane1);
-
-        jPanel2.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 100, 490, 110));
+        jPanel2.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 80, 530, 120));
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 500));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void MyBooksTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MyBooksTableMouseClicked
-        int row = MyBooksTable.getSelectedRow();
-
-        if (row >= 0) {
-            selectedBorrowID = (int) MyBooksTable.getValueAt(row, 0);
-            selectedDateBorrowed = (Date) MyBooksTable.getValueAt(row, 3);
-            selectedDueDate = (Date) MyBooksTable.getValueAt(row, 4);
-        }
-    }//GEN-LAST:event_MyBooksTableMouseClicked
 
     private void btnReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReturnActionPerformed
         if (selectedBorrowID == -1 || selectedDueDate == null) {
@@ -296,8 +278,8 @@ public class ReturnBooks extends javax.swing.JFrame {
             model.addRow(new Object[]{
                 rs.getString("BookName"),
                 rs.getString("StudentName"),
-                rs.getTimestamp("DateBorrowed"),
-                rs.getTimestamp("DueDate")
+                rs.getDate("DateBorrowed"),
+                rs.getDate("DueDate")
             });
         }
 
@@ -309,16 +291,22 @@ public class ReturnBooks extends javax.swing.JFrame {
                 TableCellRenderer renderer = MyBooksTable.getCellRenderer(row, col);
                 Component comp = MyBooksTable.prepareRenderer(renderer, row, col);
                 width = Math.max(comp.getPreferredSize().width + 10, width);
+                }
+                TableCellRenderer headerRenderer = MyBooksTable.getTableHeader().getDefaultRenderer();
+                    Component headerComp = headerRenderer.getTableCellRendererComponent(
+                            MyBooksTable, 
+                            MyBooksTable.getColumnName(col),
+                            false, false, 0, col
+                    );
+                    width = Math.max(width,headerComp.getPreferredSize().width + 10);
+                    MyBooksTable.getColumnModel().getColumn(col).setPreferredWidth(width);
             }
-            MyBooksTable.getColumnModel().getColumn(col).setPreferredWidth(width);
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this,
+                    "Database error: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
-
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this,
-                "Database error: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-    }
 }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable MyBooksTable;
@@ -327,8 +315,7 @@ public class ReturnBooks extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
 }

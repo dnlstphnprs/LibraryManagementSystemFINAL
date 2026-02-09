@@ -112,7 +112,7 @@ public class BorrowBooks extends javax.swing.JFrame {
 
         jScrollPane2.setViewportView(jScrollPane1);
 
-        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 100, 530, 140));
+        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 70, 630, 170));
 
         btnBorrow.setFont(new java.awt.Font("MS Reference Sans Serif", 1, 14)); // NOI18N
         btnBorrow.setText("Borrow Book");
@@ -273,22 +273,26 @@ public class BorrowBooks extends javax.swing.JFrame {
             });
         }
         
+        BookTable.setModel(model);
         BookTable.setDefaultEditor(Object.class, null);
-
         BookTable.setAutoResizeMode(BookTable.AUTO_RESIZE_OFF);
         for (int col = 0; col < BookTable.getColumnCount(); col++) {
-            int width = 50;
-            for (int row = 0; row < BookTable.getRowCount(); row++) {
-                TableCellRenderer renderer = BookTable.getCellRenderer(row, col);
-                Component comp = BookTable.prepareRenderer(renderer, row, col);
-                width = Math.max(comp.getPreferredSize().width + 10, width);
-            }
-            BookTable.getColumnModel().getColumn(col).setPreferredWidth(width);
-        }
+                int width = 50;
+                for (int row = 0; row < BookTable.getRowCount(); row++) {
+                    TableCellRenderer renderer = BookTable.getCellRenderer(row, col);
+                    Component comp = BookTable.prepareRenderer(renderer, row, col);
+                    width = Math.max(comp.getPreferredSize().width + 10, width);
+                }
 
-        BookTable.setModel(model);
-        BookTable.setAutoResizeMode(BookTable.AUTO_RESIZE_ALL_COLUMNS);
-        BookTable.setDefaultEditor(Object.class, null);
+                TableCellRenderer headerRenderer = BookTable.getTableHeader().getDefaultRenderer();
+                Component headerComp = headerRenderer.getTableCellRendererComponent(
+                        BookTable, 
+                        BookTable.getColumnName(col),
+                        false, false, 0, col
+                );
+                width = Math.max(width,headerComp.getPreferredSize().width + 10);
+                BookTable.getColumnModel().getColumn(col).setPreferredWidth(width);
+            }
 
 
     } catch (SQLException e) {
