@@ -175,7 +175,7 @@ public class UserSignupForm extends javax.swing.JFrame {
         String sql = "INSERT INTO Students (StudentID, StudentName, Password) VALUES (?, ?, ?)";
 
         try (Connection conn = DriverManager.getConnection(url, user, pass); // makes a connection with the database
-             PreparedStatement pst = conn.prepareStatement(sql)) { // stores the sql prompt for values insertion
+            PreparedStatement pst = conn.prepareStatement(sql)) { // stores the sql prompt for values insertion
 
             pst.setString(1, studentID); // set first value as student id 
             pst.setString(2, studentName); // set second value as student name
@@ -184,6 +184,7 @@ public class UserSignupForm extends javax.swing.JFrame {
             
             // message dialog for successful signup
             JOptionPane.showMessageDialog(this, "Sign up successful!");
+            
             this.dispose(); // clears current form
             LoginForm LForm = new LoginForm(); // sets LForm variable to store the specified form for redirection
             LForm.setVisible(true); // makes form visible
