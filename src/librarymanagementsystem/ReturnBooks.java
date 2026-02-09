@@ -17,6 +17,8 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.Component;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 /**
@@ -41,7 +43,7 @@ public class ReturnBooks extends javax.swing.JFrame {
         loadMyBooks(); // calls table loading method
         setLocationRelativeTo(null); // sets form's location to center
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -107,6 +109,11 @@ public class ReturnBooks extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        MyBooksTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                MyBooksTableMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(MyBooksTable);
 
         jPanel2.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 80, 530, 120));
@@ -126,6 +133,7 @@ public class ReturnBooks extends javax.swing.JFrame {
         Date today = new Date();
         long diffMillis = today.getTime() - selectedDueDate.getTime();
         long daysOverdue = TimeUnit.MILLISECONDS.toDays(diffMillis);
+        // default penalty amount
         double fine = 0;
         if (daysOverdue > 0) {
             fine = daysOverdue * 50.0;
@@ -192,6 +200,16 @@ public class ReturnBooks extends javax.swing.JFrame {
         UserHomePage UHPForm = new UserHomePage();
         UHPForm.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void MyBooksTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MyBooksTableMouseClicked
+        // when table is clicked, it selects that row and fetches data and assigns it to the respective variables 
+        int row = MyBooksTable.getSelectedRow();
+    if (row >= 0) {
+        selectedBorrowID = (int) MyBooksTable.getValueAt(row, 0);
+        selectedDateBorrowed = (Date) MyBooksTable.getValueAt(row, 2);
+        selectedDueDate = (Date) MyBooksTable.getValueAt(row, 3);
+        }
+    }//GEN-LAST:event_MyBooksTableMouseClicked
     
     private void borrowBook(String bookName, String studentName, String dateBorrowed, String dueDate) {
         String insertQuery = "INSERT INTO BorrowedBooks (BookName, StudentName, DateBorrowed, DueDate) VALUES (?, ?, ?, ?)";

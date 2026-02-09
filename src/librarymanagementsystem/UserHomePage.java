@@ -107,7 +107,7 @@ public class UserHomePage extends javax.swing.JFrame {
     // checks students if they have overdue borrowed books
     private void checkOverdueBooks(){
         
-// connect to database
+    // connect to database
         try (Connection conn = DriverManager.getConnection(
             "jdbc:mysql://localhost:3306/lbs",
             "root",
@@ -137,7 +137,6 @@ public class UserHomePage extends javax.swing.JFrame {
             // calculate teh difference between tiday and the due date in milliseconds
             long diffMillis = today.getTime() - dueDate.getTime();
             // convert milliseconds to days
-            
             long daysOverdue = TimeUnit.MILLISECONDS.toDays(diffMillis);
             
             // If the book is overdue, add it to the message
