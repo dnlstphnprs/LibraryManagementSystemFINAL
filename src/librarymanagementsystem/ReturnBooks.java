@@ -124,7 +124,6 @@ public class ReturnBooks extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReturnActionPerformed
-        
         if (selectedBorrowID == -1 || selectedDueDate == null) {
             JOptionPane.showMessageDialog(this, "Please select a borrowed book first.");
             return;
@@ -148,7 +147,7 @@ public class ReturnBooks extends javax.swing.JFrame {
         if (confirm != JOptionPane.YES_OPTION) {
             return;
         }
-
+        
         String insertHistory = "INSERT INTO TransactionHistory (StudentID, BookName, DateBorrowed, DueDate, ReturnDate, Penalty) VALUES (?, ?, ?, ?, ?, ?)";
         String deleteBorrowed = "DELETE FROM BorrowedBooks WHERE BorrowID = ?";
         String updateInventory = "UPDATE BookInventory SET AvailableCopies = AvailableCopies + 1, BorrowedCopies = BorrowedCopies - 1 WHERE BookName = ?";
@@ -196,67 +195,21 @@ public class ReturnBooks extends javax.swing.JFrame {
     }//GEN-LAST:event_btnReturnActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.dispose();
+        this.dispose(); //
         UserHomePage UHPForm = new UserHomePage();
-        UHPForm.setVisible(true);
+        UHPForm.setVisible(true); //
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void MyBooksTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MyBooksTableMouseClicked
         // when table is clicked, it selects that row and fetches data and assigns it to the respective variables 
         int row = MyBooksTable.getSelectedRow();
-    if (row >= 0) {
+        if (row >= 0) {
         selectedBorrowID = (int) MyBooksTable.getValueAt(row, 0);
-        selectedDateBorrowed = (Date) MyBooksTable.getValueAt(row, 2);
-        selectedDueDate = (Date) MyBooksTable.getValueAt(row, 3);
+        selectedDateBorrowed = (Date) MyBooksTable.getValueAt(row, 3);
+        selectedDueDate = (Date) MyBooksTable.getValueAt(row, 4);
         }
     }//GEN-LAST:event_MyBooksTableMouseClicked
-    
-    private void borrowBook(String bookName, String studentName, String dateBorrowed, String dueDate) {
-        String insertQuery = "INSERT INTO BorrowedBooks (BookName, StudentName, DateBorrowed, DueDate) VALUES (?, ?, ?, ?)";
-        String updateQuery = "UPDATE BookInventory SET AvailableCopies = AvailableCopies - 1, BorrowedCopies = BorrowedCopies + 1 WHERE BookName = ? AND AvailableCopies > 0";
 
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/lbs", "root", "MySQLPW_1234");
-            PreparedStatement insertStmt = connection.prepareStatement(insertQuery);
-            PreparedStatement updateStmt = connection.prepareStatement(updateQuery)) {
-
-            insertStmt.setString(1, bookName);
-            insertStmt.setString(2, studentName);
-            insertStmt.setString(3, dateBorrowed);
-            insertStmt.setString(4, dueDate);
-            int rowsInserted = insertStmt.executeUpdate();
-
-        if (rowsInserted > 0) {
-            updateStmt.setString(1, bookName);
-            int rowsAffected = updateStmt.executeUpdate();
-
-            if (rowsAffected > 0) {
-                JOptionPane.showMessageDialog(this, "Book successfully borrowed and inventory updated!");
-            } else {
-                JOptionPane.showMessageDialog(this, "Error: No available copies of this book.");
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "An error occurred while borrowing the book.");
-        }
-
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage());
-        }
-    }
-    private boolean canBorrow(String studentName) {
-        String query = "SELECT COUNT(*) FROM BorrowedBooks WHERE StudentName = ?";
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/lbs", "root", "MySQLPW_1234");
-            PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, studentName);
-            ResultSet rs = stmt.executeQuery();
-        if (rs.next()) {
-            int count = rs.getInt(1);
-            return count < 3;
-        }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
-        }
-        return false;
-    }
     /**
      * @param args the command line arguments
      */
@@ -291,6 +244,7 @@ public class ReturnBooks extends javax.swing.JFrame {
         };
         
         // defines all columns to be displayed
+        model.addColumn("BookID");
         model.addColumn("BookName");
         model.addColumn("StudentName");
         model.addColumn("DateBorrowed");
@@ -299,6 +253,7 @@ public class ReturnBooks extends javax.swing.JFrame {
         // loops through each row and adds to the table
         while (rs.next()) {
             model.addRow(new Object[]{
+                rs.getInt("BorrowID"),
                 rs.getString("BookName"),
                 rs.getString("StudentName"),
                 rs.getDate("DateBorrowed"),

@@ -212,8 +212,8 @@ public class BorrowBooks extends javax.swing.JFrame {
         try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/lbs", "root", "MySQLPW_1234");
                 // places query to stmt to fetch data 
                 PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, studentName); // sets first paramater as studentName
-            ResultSet rs = stmt.executeQuery(); // executes program
+                stmt.setString(1, studentName); // sets first paramater as studentName
+                ResultSet rs = stmt.executeQuery(); // executes program
         // Move the cursor to the first (and only) row of the result
         if (rs.next()) {
             int count = rs.getInt(1); // get number of borrowed books
