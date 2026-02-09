@@ -137,34 +137,38 @@ public class GenerateReport extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.dispose();
-        EmployeeHomePage EHPForm = new EmployeeHomePage();
-        EHPForm.setVisible(true);
+        this.dispose(); // removes current form
+        EmployeeHomePage EHPForm = new EmployeeHomePage(); // sets UHPForm variable to store the specified form for redirection
+        EHPForm.setVisible(true); // makes form visible
     }//GEN-LAST:event_jButton1ActionPerformed
     private void loadOverdueBooks(){
+        // connect to database
         try (Connection con = DriverManager.getConnection(
             "jdbc:mysql://localhost:3306/lbs",
             "root",
             "MySQLPW_1234")) {
-
+        // SQL query to fetch all borrowed books that are overdue (NOW == Current Date > DueDate)
         String sql = "SELECT * FROM BorrowedBooks WHERE NOW() > DueDate";
-        PreparedStatement pst = con.prepareStatement(sql);
-        ResultSet rs = pst.executeQuery();
+        PreparedStatement pst = con.prepareStatement(sql); // stores sql query in a prepared statement
+        ResultSet rs = pst.executeQuery(); // executes query
 
         DefaultTableModel model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return false; // makes table uneditable
             }
         };
-
+        
+        // add table headers
         model.addColumn("BorrowID");
         model.addColumn("BookName");
         model.addColumn("StudentName");
         model.addColumn("DateBorrowed");
         model.addColumn("DueDate");
-
+        // counter of all rows returned
         int rowCount = 0;
+        
+        // loop through all result set and add them to table model
         while (rs.next()) {
             model.addRow(new Object[]{
                     rs.getInt("BorrowID"),
@@ -175,14 +179,16 @@ public class GenerateReport extends javax.swing.JFrame {
             });
             rowCount++;
         }
-
+        
+        // if there are no books that are overdue
         if (rowCount == 0) {
             JOptionPane.showMessageDialog(null,
                     "No overdue books at the moment.",
                     "Info",
                     JOptionPane.INFORMATION_MESSAGE);
         }
-
+        
+        // set table method to existing table
         ReturnOverdueTable.setModel(model);
         ReturnOverdueTable.setAutoResizeMode(ReturnOverdueTable.AUTO_RESIZE_OFF);
 
@@ -195,7 +201,7 @@ public class GenerateReport extends javax.swing.JFrame {
                     Component comp = ReturnOverdueTable.prepareRenderer(renderer, row, col);
                     maxWidth = Math.max(comp.getPreferredSize().width + 10, maxWidth);
                 }
-
+                // include header width in the calculation
                 TableCellRenderer headerRenderer = ReturnOverdueTable.getTableHeader().getDefaultRenderer();
                 Component headerComp = headerRenderer.getTableCellRendererComponent(
                         ReturnOverdueTable,
@@ -203,27 +209,27 @@ public class GenerateReport extends javax.swing.JFrame {
                         false, false, 0, col
                 );
                 maxWidth = Math.max(maxWidth, headerComp.getPreferredSize().width + 10);
-
+                // apply calculated width to column
                 ReturnOverdueTable.getColumnModel().getColumn(col).setPreferredWidth(maxWidth);
             }
         }
-
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(null,
-                "Database error: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE);
-    }
+        // send error message if database error occurs
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,
+                    "Database error: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }
     private void loadDisposeBooks() {
         try (Connection con = DriverManager.getConnection(
         "jdbc:mysql://localhost:3306/lbs",
         "root",
         "MySQLPW_1234")) {
-
+        // SQL query to select books purchased 5 years ago (eligble for disposal0
         String sql = "SELECT * FROM BookInventory WHERE YearPurchased <= YEAR(CURDATE()) - 5";
-        PreparedStatement pst = con.prepareStatement(sql);
-        ResultSet rs = pst.executeQuery();
+        PreparedStatement pst = con.prepareStatement(sql); // stores sql query to prepared statement
+        ResultSet rs = pst.executeQuery(); // executes query
 
         DefaultTableModel model = new DefaultTableModel() {
             @Override
@@ -231,14 +237,17 @@ public class GenerateReport extends javax.swing.JFrame {
                 return column != 0; // BookID not editable
             }
         };
-
+        
+        // add table headers
         model.addColumn("BookID");
         model.addColumn("BookName");
         model.addColumn("Author");
         model.addColumn("YearPurchased");
         model.addColumn("AvailableCopies");
-
+        // counter that coutns all returned rowss
         int rowCount = 0;
+        
+        // loop through all result set and add to table model
         while (rs.next()) {
             model.addRow(new Object[]{
                     rs.getInt("BookID"),
@@ -249,27 +258,29 @@ public class GenerateReport extends javax.swing.JFrame {
             });
             rowCount++;
         }
-
+        // if no rows returned, show message dialog
         if (rowCount == 0) {
             JOptionPane.showMessageDialog(null,
                     "No books eligible for disposal.",
                     "Info",
                     JOptionPane.INFORMATION_MESSAGE);
         }
-
+        
+        // set model to existing table
         BookForDisposalTable.setModel(model);
         BookForDisposalTable.setAutoResizeMode(BookForDisposalTable.AUTO_RESIZE_OFF);
-
+        
+        // adjust width only if we have rows
         if (rowCount > 0) {
             for (int col = 0; col < BookForDisposalTable.getColumnCount(); col++) {
                 int maxWidth = 50;
-
+                // adjust based on cell contents
                 for (int row = 0; row < BookForDisposalTable.getRowCount(); row++) {
                     TableCellRenderer renderer = BookForDisposalTable.getCellRenderer(row, col);
                     Component comp = BookForDisposalTable.prepareRenderer(renderer, row, col);
                     maxWidth = Math.max(comp.getPreferredSize().width + 10, maxWidth);
                 }
-
+                // include header width in the calculation
                 TableCellRenderer headerRenderer = BookForDisposalTable.getTableHeader().getDefaultRenderer();
                 Component headerComp = headerRenderer.getTableCellRendererComponent(
                         BookForDisposalTable,
@@ -277,19 +288,19 @@ public class GenerateReport extends javax.swing.JFrame {
                         false, false, 0, col
                 );
                 maxWidth = Math.max(maxWidth, headerComp.getPreferredSize().width + 10);
-
+                // Set the calculated width as the preferred width for this column
                 BookForDisposalTable.getColumnModel().getColumn(col).setPreferredWidth(maxWidth);
             }
         }
 
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(
-                        null,
-                        "Database error: " + e.getMessage(),
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
-            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(
+                null,
+                "Database error: " + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
     }
     /**
      * @param args the command line arguments
