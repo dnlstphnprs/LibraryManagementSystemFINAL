@@ -174,8 +174,8 @@ public class GenerateReport extends javax.swing.JFrame {
                     rs.getInt("BorrowID"),
                     rs.getString("BookName"),
                     rs.getString("StudentName"),
-                    rs.getTimestamp("DateBorrowed"),
-                    rs.getTimestamp("DueDate")
+                    rs.getDate("DateBorrowed"),
+                    rs.getDate("DueDate")
             });
             rowCount++;
         }

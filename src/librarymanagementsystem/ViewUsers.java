@@ -105,11 +105,23 @@ public class ViewUsers extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Title 1", "Title 2"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         StudentsTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(StudentsTable);
+        if (StudentsTable.getColumnModel().getColumnCount() > 0) {
+            StudentsTable.getColumnModel().getColumn(0).setResizable(false);
+            StudentsTable.getColumnModel().getColumn(1).setResizable(false);
+        }
 
         jScrollPane3.setViewportView(jScrollPane1);
 
@@ -117,17 +129,29 @@ public class ViewUsers extends javax.swing.JFrame {
 
         EmployeeTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Title 1", "Title 2"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         EmployeeTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(EmployeeTable);
+        if (EmployeeTable.getColumnModel().getColumnCount() > 0) {
+            EmployeeTable.getColumnModel().getColumn(0).setResizable(false);
+            EmployeeTable.getColumnModel().getColumn(1).setResizable(false);
+        }
 
         jScrollPane4.setViewportView(jScrollPane2);
 
@@ -198,7 +222,6 @@ public class ViewUsers extends javax.swing.JFrame {
         
         // set table model to existing table
         EmployeeTable.setModel(model);
-        EmployeeTable.setAutoResizeMode(EmployeeTable.AUTO_RESIZE_OFF);
         
          // Adjust column widths dynamically if there are rows
         if (rowCount > 0) {
@@ -222,6 +245,7 @@ public class ViewUsers extends javax.swing.JFrame {
                 maxWidth = Math.max(maxWidth, headerComp.getPreferredSize().width + 10);
                 // set the calculated width as the preferred width for this column
                 EmployeeTable.getColumnModel().getColumn(col).setPreferredWidth(maxWidth);
+                EmployeeTable.setAutoResizeMode(EmployeeTable.AUTO_RESIZE_OFF);
             }
         }
     // Show error message if a database exception occurs
