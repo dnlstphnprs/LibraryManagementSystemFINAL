@@ -15,8 +15,6 @@ import java.sql.SQLException;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Component;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 /**
  *
  * @author Daeniel Presa
@@ -111,11 +109,6 @@ public class ViewUsers extends javax.swing.JFrame {
             }
         ));
         StudentsTable.getTableHeader().setReorderingAllowed(false);
-        StudentsTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                StudentsTableMouseClicked(evt);
-            }
-        });
         jScrollPane1.setViewportView(StudentsTable);
 
         jScrollPane3.setViewportView(jScrollPane1);
@@ -134,11 +127,6 @@ public class ViewUsers extends javax.swing.JFrame {
             }
         ));
         EmployeeTable.getTableHeader().setReorderingAllowed(false);
-        EmployeeTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                EmployeeTableMouseClicked(evt);
-            }
-        });
         jScrollPane2.setViewportView(EmployeeTable);
 
         jScrollPane4.setViewportView(jScrollPane2);
@@ -150,24 +138,12 @@ public class ViewUsers extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void StudentsTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StudentsTableMouseClicked
-        int row = StudentsTable.getSelectedRow();
-        if (row >= 0) {
-        selectedBookID = (int) StudentsTable.getValueAt(row, 0);
-        selectedAvailableCopies = (int) StudentsTable.getValueAt(row, 2);
-        selectedBookName = StudentsTable.getValueAt(row, 1).toString();
-        }
-    }//GEN-LAST:event_StudentsTableMouseClicked
-   
+  
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.dispose();
-        EmployeeHomePage EHPForm = new EmployeeHomePage();
-        EHPForm.setVisible(true);
+        this.dispose(); // removes current form
+        EmployeeHomePage EHPForm = new EmployeeHomePage(); // sets UHPForm variable to store the specified form for redirection
+        EHPForm.setVisible(true); // makes form Visible
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void EmployeeTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EmployeeTableMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_EmployeeTableMouseClicked
     
     /**
      * @param args the command line arguments
@@ -180,26 +156,30 @@ public class ViewUsers extends javax.swing.JFrame {
         });
     }
     private void loadEmployees() {
+    // connects to database
     try (Connection con = DriverManager.getConnection(
             "jdbc:mysql://localhost:3306/lbs",
             "root",
             "MySQLPW_1234")) {
-
+        // sql prompt to fetch employee table
         String sql = "SELECT * FROM Employees";
-        PreparedStatement pst = con.prepareStatement(sql);
-        ResultSet rs = pst.executeQuery();
-
+        PreparedStatement pst = con.prepareStatement(sql); // stores sql query in preparedstatement
+        ResultSet rs = pst.executeQuery(); // execute query
+        
         DefaultTableModel model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column != 0;
+                return column != 0; // makes all columns editable except EmployeeID
             }
         };
-
+        // add column headers
         model.addColumn("EmployeeID");
         model.addColumn("EmployeeName");
-
+        
+        // counter to check if there are rows returned
         int rowCount = 0;
+        
+        //loop through all records and add rows to table model
         while (rs.next()) {
             model.addRow(new Object[]{
                     rs.getString("EmployeeID"),
@@ -207,27 +187,32 @@ public class ViewUsers extends javax.swing.JFrame {
             });
             rowCount++;
         }
-
+        
+        // Shows a message if there are no employees were found
         if (rowCount == 0) {
             JOptionPane.showMessageDialog(null,
                     "No employee found.",
                     "Info",
                     JOptionPane.INFORMATION_MESSAGE);
         }
-
+        
+        // set table model to existing table
         EmployeeTable.setModel(model);
         EmployeeTable.setAutoResizeMode(EmployeeTable.AUTO_RESIZE_OFF);
-
+        
+         // Adjust column widths dynamically if there are rows
         if (rowCount > 0) {
             for (int col = 0; col < EmployeeTable.getColumnCount(); col++) {
                 int maxWidth = 50;
-
+                
+                // calculate the maximum width needed for all cells in this column
                 for (int row = 0; row < EmployeeTable.getRowCount(); row++) {
                     TableCellRenderer renderer = EmployeeTable.getCellRenderer(row, col);
                     Component comp = EmployeeTable.prepareRenderer(renderer, row, col);
                     maxWidth = Math.max(comp.getPreferredSize().width + 10, maxWidth);
                 }
-
+                
+                // include header width in the calculation
                 TableCellRenderer headerRenderer = EmployeeTable.getTableHeader().getDefaultRenderer();
                 Component headerComp = headerRenderer.getTableCellRendererComponent(
                        EmployeeTable,
@@ -235,11 +220,11 @@ public class ViewUsers extends javax.swing.JFrame {
                         false, false, 0, col
                 );
                 maxWidth = Math.max(maxWidth, headerComp.getPreferredSize().width + 10);
-
+                // set the calculated width as the preferred width for this column
                 EmployeeTable.getColumnModel().getColumn(col).setPreferredWidth(maxWidth);
             }
         }
-
+    // Show error message if a database exception occurs
     } catch (SQLException e) {
         JOptionPane.showMessageDialog(
                 null,
@@ -248,76 +233,81 @@ public class ViewUsers extends javax.swing.JFrame {
                 JOptionPane.ERROR_MESSAGE
         );
     }
-}
+}   
+    // loading students table method
     private void loadStudents() {
-    try (Connection con = DriverManager.getConnection(
-            "jdbc:mysql://localhost:3306/lbs",
-            "root",
-            "MySQLPW_1234")) {
+        // connect to database
+        try (Connection con = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/lbs",
+                "root",
+                "MySQLPW_1234")) {
+            // SQL Query for
+            String sql = "SELECT * FROM Students";
+            PreparedStatement pst = con.prepareStatement(sql);
+            
+            ResultSet rs = pst.executeQuery();
 
-        String sql = "SELECT * FROM Students";
-        PreparedStatement pst = con.prepareStatement(sql);
-        ResultSet rs = pst.executeQuery();
-
-        DefaultTableModel model = new DefaultTableModel() {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return column != 0;
-            }
-        };
-
-        model.addColumn("StudentID");
-        model.addColumn("StudentName");
-
-        int rowCount = 0;
-        while (rs.next()) {
-            model.addRow(new Object[]{
-                    rs.getString("StudentID"),
-                    rs.getString("StudentName"),
-            });
-            rowCount++;
-        }
-
-        if (rowCount == 0) {
-            JOptionPane.showMessageDialog(null,
-                    "No students found.",
-                    "Info",
-                    JOptionPane.INFORMATION_MESSAGE);
-        }
-
-        StudentsTable.setModel(model);
-        StudentsTable.setAutoResizeMode(StudentsTable.AUTO_RESIZE_OFF);
-
-        if (rowCount > 0) {
-            for (int col = 0; col < StudentsTable.getColumnCount(); col++) {
-                int maxWidth = 50;
-
-                for (int row = 0; row < StudentsTable.getRowCount(); row++) {
-                    TableCellRenderer renderer = StudentsTable.getCellRenderer(row, col);
-                    Component comp = StudentsTable.prepareRenderer(renderer, row, col);
-                    maxWidth = Math.max(comp.getPreferredSize().width + 10, maxWidth);
+            DefaultTableModel model = new DefaultTableModel() {
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return column != 0; // makes all columns editable except StudentID
                 }
+            };
+            // add column headers
+            model.addColumn("StudentID");
+            model.addColumn("StudentName");
 
-                TableCellRenderer headerRenderer = StudentsTable.getTableHeader().getDefaultRenderer();
-                Component headerComp = headerRenderer.getTableCellRendererComponent(
-                        StudentsTable,
-                        StudentsTable.getColumnName(col),
-                        false, false, 0, col
-                );
-                maxWidth = Math.max(maxWidth, headerComp.getPreferredSize().width + 10);
-
-                StudentsTable.getColumnModel().getColumn(col).setPreferredWidth(maxWidth);
+            int rowCount = 0;
+            while (rs.next()) {
+                model.addRow(new Object[]{
+                        rs.getString("StudentID"),
+                        rs.getString("StudentName"),
+                });
+                rowCount++;
             }
-        }
+            // if there are no rows in the record
+            if (rowCount == 0) {
+                JOptionPane.showMessageDialog(null,
+                        "No students found.",
+                        "Info",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
 
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(
-                null,
-                "Database error: " + e.getMessage(),
-                "Error",
-                JOptionPane.ERROR_MESSAGE
-        );
-    }
+            // sets table model to existing table
+            StudentsTable.setModel(model);
+            StudentsTable.setAutoResizeMode(StudentsTable.AUTO_RESIZE_OFF);
+
+            // Adjust column widths dynamically if there are rows
+            if (rowCount > 0) {
+                for (int col = 0; col < StudentsTable.getColumnCount(); col++) {
+                    int maxWidth = 50;
+                    // calculate the maximum width needed for all cells in this column
+                    for (int row = 0; row < StudentsTable.getRowCount(); row++) {
+                        TableCellRenderer renderer = StudentsTable.getCellRenderer(row, col);
+                        Component comp = StudentsTable.prepareRenderer(renderer, row, col);
+                        maxWidth = Math.max(comp.getPreferredSize().width + 10, maxWidth);
+                    }
+                    // include header width in the calculation
+                    TableCellRenderer headerRenderer = StudentsTable.getTableHeader().getDefaultRenderer();
+                    Component headerComp = headerRenderer.getTableCellRendererComponent(
+                            StudentsTable,
+                            StudentsTable.getColumnName(col),
+                            false, false, 0, col
+                    );
+                    maxWidth = Math.max(maxWidth, headerComp.getPreferredSize().width + 10);
+                    // set the calculated width as the preferred width for this column
+                    StudentsTable.getColumnModel().getColumn(col).setPreferredWidth(maxWidth);
+                }
+            }
+        // show error message if database error occurs
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "Database error: " + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
 }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

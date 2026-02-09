@@ -28,19 +28,18 @@ public class ReturnBooks extends javax.swing.JFrame {
     /**
      * Creates new form LoginForm
      */
+    // variables used for selection
     private int selectedBorrowID = -1;
     private Date selectedDateBorrowed = null;
     private Date selectedDueDate = null;
 
     public ReturnBooks() {
         initComponents();
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
-        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt)))
-        .start();
-        dateandtimeLabel.setText(LocalDateTime.now().format(fmt));
-        loadMyBooks();
-        setLocationRelativeTo(null);
-        
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a"); // fetches date and time format, placed into fmt 
+        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt))).start(); // sets timer for every 60 seconds, it updates the label
+        dateandtimeLabel.setText(LocalDateTime.now().format(fmt)); // sets current time and date with format to label
+        loadMyBooks(); // calls table loading method
+        setLocationRelativeTo(null); // sets form's location to center
     }
 
     /**
@@ -118,6 +117,7 @@ public class ReturnBooks extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnReturnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReturnActionPerformed
+        
         if (selectedBorrowID == -1 || selectedDueDate == null) {
             JOptionPane.showMessageDialog(this, "Please select a borrowed book first.");
             return;
@@ -250,30 +250,35 @@ public class ReturnBooks extends javax.swing.JFrame {
         });
     }
     
+    // table loading method 
     private void loadMyBooks() {
+    // connects to database
     try (Connection con = DriverManager.getConnection(
             "jdbc:mysql://localhost:3306/lbs",
             "root",
             "MySQLPW_1234")) {
-
+        
+        // SQL query for fetching records in database
         String sql = "SELECT * FROM BorrowedBooks WHERE StudentName = ? ORDER BY DateBorrowed DESC";
-        PreparedStatement pst = con.prepareStatement(sql);
-        pst.setString(1, SessionManager.userName);
+        PreparedStatement pst = con.prepareStatement(sql); // stores sql query to prepared statement
+        pst.setString(1, SessionManager.userName); // sets currently logged on user as the first parameter
 
-        ResultSet rs = pst.executeQuery();
+        ResultSet rs = pst.executeQuery(); // execute query
 
         DefaultTableModel model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return false; // makes table uneditable
             }
         };
-
+        
+        // defines all columns to be displayed
         model.addColumn("BookName");
         model.addColumn("StudentName");
         model.addColumn("DateBorrowed");
         model.addColumn("DueDate");
-
+        
+        // loops through each row and adds to the table
         while (rs.next()) {
             model.addRow(new Object[]{
                 rs.getString("BookName"),
@@ -282,16 +287,19 @@ public class ReturnBooks extends javax.swing.JFrame {
                 rs.getDate("DueDate")
             });
         }
-
+        // sets model to existing table
         MyBooksTable.setModel(model);
-
+        
+        // adjust column width based on size
         for (int col = 0; col < MyBooksTable.getColumnCount(); col++) {
             int width = 50;
+            // check width of each cell
             for (int row = 0; row < MyBooksTable.getRowCount(); row++) {
                 TableCellRenderer renderer = MyBooksTable.getCellRenderer(row, col);
                 Component comp = MyBooksTable.prepareRenderer(renderer, row, col);
                 width = Math.max(comp.getPreferredSize().width + 10, width);
                 }
+                // adjust columm width based on header size
                 TableCellRenderer headerRenderer = MyBooksTable.getTableHeader().getDefaultRenderer();
                     Component headerComp = headerRenderer.getTableCellRendererComponent(
                             MyBooksTable, 

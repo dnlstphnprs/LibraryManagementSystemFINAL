@@ -37,12 +37,11 @@ public class BorrowBooks extends javax.swing.JFrame {
     
     public BorrowBooks() {
         initComponents();
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
-        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt)))
-        .start();
-        dateandtimeLabel.setText(LocalDateTime.now().format(fmt));
-        loadBooks();
-        setLocationRelativeTo(null);
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a"); // fetches date and time format, placed into fmt 
+        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt))).start(); // sets timer for every 60 seconds, it updates the label
+        dateandtimeLabel.setText(LocalDateTime.now().format(fmt));  // sets the time when program is run
+        loadBooks(); // calls load book inventory method
+        setLocationRelativeTo(null); // sets form's location to center
     }
 
     /**
@@ -162,10 +161,9 @@ public class BorrowBooks extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBorrowActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // redirection block
-        this.dispose();
-        UserHomePage UHPForm = new UserHomePage();
-        UHPForm.setVisible(true);
+        this.dispose(); // removes current form
+        UserHomePage UHPForm = new UserHomePage(); // sets LForm variable to store the specified form for redirection
+        UHPForm.setVisible(true); // makes form visible
     }//GEN-LAST:event_jButton1ActionPerformed
     
     private void borrowBook(String bookName, String studentName, String dateBorrowed, String dueDate) {

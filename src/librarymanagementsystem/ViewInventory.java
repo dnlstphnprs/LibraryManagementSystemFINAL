@@ -155,7 +155,7 @@ public class ViewInventory extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    // fetches selected rows
     private void BookTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_BookTableMouseClicked
         int row = BookTable.getSelectedRow();
         if (row >= 0) {
@@ -166,21 +166,22 @@ public class ViewInventory extends javax.swing.JFrame {
     }//GEN-LAST:event_BookTableMouseClicked
    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.dispose();
-        EmployeeHomePage EHPForm = new EmployeeHomePage();
-        EHPForm.setVisible(true);
+        this.dispose(); // removes current form
+        EmployeeHomePage EHPForm = new EmployeeHomePage(); // sets UHPForm variable to store the specified form for redirection
+        EHPForm.setVisible(true); // makes form Visible
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        // If the table is currently being edited, stop editing to save the latest values
         if (BookTable.isEditing()) {
         BookTable.getCellEditor().stopCellEditing();
-    }
-
-    try (Connection con = DriverManager.getConnection(
+        }
+        // Connect to database
+        try (Connection con = DriverManager.getConnection(
             "jdbc:mysql://localhost:3306/lbs",
             "root",
             "MySQLPW_1234")) {
-
+        // SQL Query to update a row in the book inventory
         String updateSQL = "UPDATE BookInventory SET BookName = ?, Author = ?, YearPurchased = ?, AvailableCopies = ? WHERE BookID = ?";
         PreparedStatement pst = con.prepareStatement(updateSQL);
 
@@ -204,9 +205,9 @@ public class ViewInventory extends javax.swing.JFrame {
 
         JOptionPane.showMessageDialog(this, "Updated successfully.");
 
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed

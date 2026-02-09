@@ -214,7 +214,7 @@ public class UserProfileForm extends javax.swing.JFrame {
                 }
             };
             
-            // defines each columnb to display
+            // defines each column to display
             model.addColumn("BookName");
             model.addColumn("DateBorrowed");
             model.addColumn("DueDate");
@@ -241,9 +241,10 @@ public class UserProfileForm extends javax.swing.JFrame {
                     Component comp = MyTransactionsTable.prepareRenderer(renderer, row, col);
                     width = Math.max(comp.getPreferredSize().width + 10, width);
                 }
+                // sets model to table
                 MyTransactionsTable.getColumnModel().getColumn(col).setPreferredWidth(width);
             }
-        // error mesasge if database error occurs    
+        // show error mesasge if database error occurs    
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this,
                     "Database error: " + e.getMessage(),

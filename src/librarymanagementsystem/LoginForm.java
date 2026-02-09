@@ -165,8 +165,9 @@ public class LoginForm extends javax.swing.JFrame {
                     // show successful login message dialog
                     JOptionPane.showMessageDialog(this, "Welcome, " + SessionManager.userName + "!");
                     // redirection block
-                    this.dispose();
-                    new UserHomePage().setVisible(true);
+                    this.dispose(); // removes current form
+                    UserHomePage UHPForm = new UserHomePage(); // sets UHPForm variable to store the specified form for redirection
+                    UHPForm.setVisible(true); // makes form Visible
                     return;
                 }
             }
