@@ -175,39 +175,47 @@ public class ViewInventory extends javax.swing.JFrame {
         // SQL Query to update a row in the book inventory
         String updateSQL = "UPDATE BookInventory SET BookName = ?, Author = ?, YearPurchased = ?, AvailableCopies = ? WHERE BookID = ?";
         PreparedStatement pst = con.prepareStatement(updateSQL);
-
+        
+        // loop through all rows
         for (int row = 0; row < BookTable.getRowCount(); row++) {
+            // get values from the table for the current row
             int bookID = Integer.parseInt(BookTable.getValueAt(row, 0).toString());
             String bookName = BookTable.getValueAt(row, 1).toString();
             String author = BookTable.getValueAt(row, 2).toString();
             int yearPurchased = Integer.parseInt(BookTable.getValueAt(row, 3).toString());
             int availableCopies = Integer.parseInt(BookTable.getValueAt(row, 4).toString());
-
+            
+            // set values for WHERE parameters in prepared statement
             pst.setString(1, bookName);
             pst.setString(2, author);
             pst.setInt(3, yearPurchased);
             pst.setInt(4, availableCopies);
             pst.setInt(5, bookID);
-
+            
+            // adds row's update in the batch
             pst.addBatch();
         }
-
+        // executes all updates in the batch
         pst.executeBatch();
-
+        
+        // notify user that update was successful
         JOptionPane.showMessageDialog(this, "Updated successfully.");
-
+            
+            // error message if something goes wrong
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnAddBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddBookActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_btnAddBookActionPerformed
 
     private void btnDeleteRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteRowActionPerformed
-         int row = BookTable.getSelectedRow();
-
+        // fetches row selected
+        int row = BookTable.getSelectedRow();
+        
+        // if there are no rows selected, show 
         if (row == -1) {
             JOptionPane.showMessageDialog(
                 this,
@@ -217,40 +225,46 @@ public class ViewInventory extends javax.swing.JFrame {
             );
             return;
         }
-
+        // fetches book id from the table
         int bookID = Integer.parseInt(BookTable.getValueAt(row, 0).toString());
-
+        
+        // confirm dialog for confirmation of deletion
         int confirm = JOptionPane.showConfirmDialog(
             this,
             "Are you sure you want to delete this book?",
             "Confirm Delete",
             JOptionPane.YES_NO_OPTION
         );
-
+        
+        // if YES OPTION was not selected
         if (confirm != JOptionPane.YES_OPTION) {
             return;
         }
-
+        
+        // connects to database
         try (Connection con = DriverManager.getConnection(
                  "jdbc:mysql://localhost:3306/lbs",
                  "root",
                  "MySQLPW_1234");
-             PreparedStatement ps = con.prepareStatement(
-                 "DELETE FROM BookInventory WHERE BookID = ?")) {
-
+            // SQL Query for deleting records
+            PreparedStatement ps = con.prepareStatement("DELETE FROM BookInventory WHERE BookID = ?")) {
+            // sets bookID as first parameter
             ps.setInt(1, bookID);
-            int affectedRows = ps.executeUpdate();
-
+            int affectedRows = ps.executeUpdate(); // executes query
+            
+            // if there are affected rows
             if (affectedRows > 0) {
                 DefaultTableModel model = (DefaultTableModel) BookTable.getModel();
                 model.removeRow(row);
-
+                
+                // clears selection
                 selectedBookID = -1;
                 selectedAvailableCopies = 0;
                 selectedBookName = null;
-
+                // notify that deletion was successful
                 JOptionPane.showMessageDialog(this, "Book deleted successfully.");
             } else {
+                // notify that book can't be found in the database
                 JOptionPane.showMessageDialog(this, "Book not found in database.");
             }
 
@@ -274,15 +288,18 @@ public class ViewInventory extends javax.swing.JFrame {
             }
         });
     }
+    // table loading method
     private void loadBooks() {
+        // connect to database
         try (Connection con = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/lbs",
                 "root",
                 "MySQLPW_1234")) {
-
+            // SQL query in fetching data from BookInventory in table
             String sql = "SELECT * FROM BookInventory";
+            // places query in prepared statement
             PreparedStatement pst = con.prepareStatement(sql);
-            ResultSet rs = pst.executeQuery();
+            ResultSet rs = pst.executeQuery(); // fetches results after executing query
 
             DefaultTableModel model = new DefaultTableModel() {
                 @Override
@@ -290,13 +307,14 @@ public class ViewInventory extends javax.swing.JFrame {
                     return column != 0; // BookID not editable
                 }
             };
-
+            // adds headers for table
             model.addColumn("BookID");
             model.addColumn("BookName");
             model.addColumn("Author");
             model.addColumn("YearPurchased");
             model.addColumn("AvailableCopies");
-
+            
+            // loops through all rows and adds it to table model
             while (rs.next()) {
                 model.addRow(new Object[]{
                         rs.getInt("BookID"),
@@ -306,10 +324,12 @@ public class ViewInventory extends javax.swing.JFrame {
                         rs.getInt("AvailableCopies")
                 });
             }
-
+            
+            // sets table model to existing table
             BookTable.setModel(model);
             BookTable.setAutoResizeMode(BookTable.AUTO_RESIZE_OFF);
-
+            
+            // save original table data
             originalBookTableData = new Object[BookTable.getRowCount()][BookTable.getColumnCount()];
             for (int i = 0; i < BookTable.getRowCount(); i++) {
                 for (int j = 0; j < BookTable.getColumnCount(); j++) {
@@ -317,7 +337,7 @@ public class ViewInventory extends javax.swing.JFrame {
                 }
             }
         
-        
+            // auto resize based on the content
             for (int col = 0; col < BookTable.getColumnCount(); col++) {
                 int width = 50;
                 for (int row = 0; row < BookTable.getRowCount(); row++) {
@@ -325,7 +345,7 @@ public class ViewInventory extends javax.swing.JFrame {
                     Component comp = BookTable.prepareRenderer(renderer, row, col);
                     width = Math.max(comp.getPreferredSize().width + 10, width);
                 }
-
+                // includes header size in computation 
                 TableCellRenderer headerRenderer = BookTable.getTableHeader().getDefaultRenderer();
                 Component headerComp = headerRenderer.getTableCellRendererComponent(
                         BookTable, 
@@ -333,8 +353,10 @@ public class ViewInventory extends javax.swing.JFrame {
                         false, false, 0, col
                 );
                 width = Math.max(width,headerComp.getPreferredSize().width + 10);
+                // applies computation to column
                 BookTable.getColumnModel().getColumn(col).setPreferredWidth(width);
             }
+        // if any database error occurs
         } catch (SQLException e) {
         JOptionPane.showMessageDialog(null,
                 "Database error: " + e.getMessage(),
