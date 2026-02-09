@@ -66,7 +66,6 @@ public class ViewInventory extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         BookTable = new javax.swing.JTable();
         btnAddBook = new javax.swing.JButton();
-        btnRefresh = new javax.swing.JButton();
         btnDeleteRow = new javax.swing.JButton();
         btnSave = new javax.swing.JButton();
 
@@ -125,23 +124,15 @@ public class ViewInventory extends javax.swing.JFrame {
                 btnAddBookActionPerformed(evt);
             }
         });
-        jPanel1.add(btnAddBook, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 260, -1, -1));
+        jPanel1.add(btnAddBook, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 260, -1, -1));
 
-        btnRefresh.setText("Refresh Table");
-        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnRefreshActionPerformed(evt);
-            }
-        });
-        jPanel1.add(btnRefresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 260, 110, -1));
-
-        btnDeleteRow.setText("Delete Row");
+        btnDeleteRow.setText("Delete Book");
         btnDeleteRow.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDeleteRowActionPerformed(evt);
             }
         });
-        jPanel1.add(btnDeleteRow, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 290, 110, -1));
+        jPanel1.add(btnDeleteRow, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 260, 110, -1));
 
         btnSave.setText("Save Changes");
         btnSave.addActionListener(new java.awt.event.ActionListener() {
@@ -149,7 +140,7 @@ public class ViewInventory extends javax.swing.JFrame {
                 btnSaveActionPerformed(evt);
             }
         });
-        jPanel1.add(btnSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 290, 150, -1));
+        jPanel1.add(btnSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 260, 120, -1));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 710, 500));
 
@@ -209,10 +200,6 @@ public class ViewInventory extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
     }//GEN-LAST:event_btnSaveActionPerformed
-
-    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
-        loadBooks();
-    }//GEN-LAST:event_btnRefreshActionPerformed
 
     private void btnAddBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddBookActionPerformed
         // TODO add your handling code here:
@@ -359,7 +346,6 @@ public class ViewInventory extends javax.swing.JFrame {
     private javax.swing.JTable BookTable;
     private javax.swing.JButton btnAddBook;
     private javax.swing.JButton btnDeleteRow;
-    private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnSave;
     private javax.swing.JLabel dateandtimeLabel;
     private javax.swing.JButton jButton1;

@@ -3,15 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Daeniel%20Presa/OneDrive/Desktop/LibraryManagementSystemFINAL/src/librarymanagementsystem/ViewHistory.java</file>
+            <file>file:/C:/Users/Daeniel%20Presa/OneDrive/Desktop/LibraryManagementSystemFINAL/src/librarymanagementsystem/LibraryManagementSystem.java</file>
+            <file>file:/C:/Users/Daeniel%20Presa/OneDrive/Desktop/LibraryManagementSystemFINAL/src/librarymanagementsystem/UserHomePage.java</file>
             <file>file:/C:/Users/Daeniel%20Presa/OneDrive/Desktop/LibraryManagementSystemFINAL/src/librarymanagementsystem/ReturnBooks.java</file>
             <file>file:/C:/Users/Daeniel%20Presa/OneDrive/Desktop/LibraryManagementSystemFINAL/src/librarymanagementsystem/BorrowBooks.java</file>
-            <file>file:/C:/Users/Daeniel%20Presa/OneDrive/Desktop/LibraryManagementSystemFINAL/src/librarymanagementsystem/AddBookDialog.java</file>
-            <file>file:/C:/Users/Daeniel%20Presa/OneDrive/Desktop/LibraryManagementSystemFINAL/src/librarymanagementsystem/EmployeeHomePage.java</file>
-            <file>file:/C:/Users/Daeniel%20Presa/OneDrive/Desktop/LibraryManagementSystemFINAL/src/librarymanagementsystem/EmployeeSignupForm.java</file>
-            <file>file:/C:/Users/Daeniel%20Presa/OneDrive/Desktop/LibraryManagementSystemFINAL/src/librarymanagementsystem/ViewInventory.java</file>
-            <file>file:/C:/Users/Daeniel%20Presa/OneDrive/Desktop/LibraryManagementSystemFINAL/src/librarymanagementsystem/UserHomePage.java</file>
-            <file>file:/C:/Users/Daeniel%20Presa/OneDrive/Desktop/LibraryManagementSystemFINAL/src/librarymanagementsystem/ViewUsers.java</file>
+            <file>file:/C:/Users/Daeniel%20Presa/OneDrive/Desktop/LibraryManagementSystemFINAL/src/librarymanagementsystem/SessionManager.java</file>
+            <file>file:/C:/Users/Daeniel%20Presa/OneDrive/Desktop/LibraryManagementSystemFINAL/src/librarymanagementsystem/LoginForm.java</file>
+            <file>file:/C:/Users/Daeniel%20Presa/OneDrive/Desktop/LibraryManagementSystemFINAL/src/librarymanagementsystem/UserSignupForm.java</file>
         </group>
     </open-files>
 </project-private>
