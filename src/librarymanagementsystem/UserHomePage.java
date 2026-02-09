@@ -72,7 +72,7 @@ public class UserHomePage extends javax.swing.JFrame {
         btnProfile.setFont(new java.awt.Font("MS Reference Sans Serif", 1, 14)); // NOI18N
         btnProfile.setText("Profile Info");
         btnProfile.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        btnProfile.setIconTextGap(5);
+        btnProfile.setIconTextGap(9);
         btnProfile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnProfileActionPerformed(evt);
@@ -99,6 +99,7 @@ public class UserHomePage extends javax.swing.JFrame {
         getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 200, 200, 80));
 
         jPanel1.setBackground(new java.awt.Color(87, 87, 87));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 700, 500));
 
         pack();

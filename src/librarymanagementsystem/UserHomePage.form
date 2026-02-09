@@ -86,7 +86,7 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Profile Info"/>
         <Property name="horizontalTextPosition" type="int" value="2"/>
-        <Property name="iconTextGap" type="int" value="5"/>
+        <Property name="iconTextGap" type="int" value="9"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnProfileActionPerformed"/>
@@ -144,7 +144,9 @@
         </Constraint>
       </Constraints>
 
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
+        <Property name="useNullLayout" type="boolean" value="false"/>
+      </Layout>
     </Container>
   </SubComponents>
 </Form>
