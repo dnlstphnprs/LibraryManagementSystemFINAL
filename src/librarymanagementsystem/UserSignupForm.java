@@ -26,7 +26,7 @@ public class UserSignupForm extends javax.swing.JFrame {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a"); // fetches date and time format, placed into fmt 
         new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt))).start(); // sets timer for every 60 seconds, it updates the label
         dateandtimeLabel.setText(LocalDateTime.now().format(fmt)); // sets the time when program is run
-        setLocationRelativeTo(null); // centers the form
+        // setLocationRelativeTo(null); // centers the form
         employeesignupLabel.setText("<html><u>" + employeesignupLabel.getText() + "</u></html>"); // makes label have underlined text
         loginLabel.setText("<html><u>" + loginLabel.getText() + "</u></html>"); // makes label have underlined text
     }
