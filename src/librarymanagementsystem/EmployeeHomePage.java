@@ -6,7 +6,6 @@ package librarymanagementsystem;
 import javax.swing.Timer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import javax.swing.SwingUtilities;
 /**
  *
  * @author Daeniel Presa
@@ -18,13 +17,10 @@ public class EmployeeHomePage extends javax.swing.JFrame {
      */
     public EmployeeHomePage() {
         initComponents();
-        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
-        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt)))
-        .start();
-        dateandtimeLabel.setText(LocalDateTime.now().format(fmt));
-        setLocationRelativeTo(null);
-        SwingUtilities.invokeLater(() -> {
-        });
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a"); // fetches date and time format, placed into fmt 
+        new Timer(60000, e -> dateandtimeLabel.setText(LocalDateTime.now().format(fmt))).start(); // sets timer for every 60 seconds, it updates the label
+        dateandtimeLabel.setText(LocalDateTime.now().format(fmt)); // sets form's location to the center
+        setLocationRelativeTo(null); // sets form's location to center
     }
 
     /**
@@ -104,27 +100,27 @@ public class EmployeeHomePage extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     private void btnProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProfileActionPerformed
-        this.dispose();
-        ViewInventory VIForm = new ViewInventory();
-        VIForm.setVisible(true);
+        this.dispose(); // removes current form
+        ViewInventory VIForm = new ViewInventory(); // sets VIForm variable to store the specified form for redirection
+        VIForm.setVisible(true); // removes current form
     }//GEN-LAST:event_btnProfileActionPerformed
 
     private void ViewHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewHistoryActionPerformed
-        this.dispose();
-        ViewHistory VHForm = new ViewHistory();
-        VHForm.setVisible(true);
+        this.dispose(); // removes current form
+        ViewHistory VHForm = new ViewHistory(); // sets VHForm variable to store the specified form for redirection
+        VHForm.setVisible(true); // makes form visible
     }//GEN-LAST:event_ViewHistoryActionPerformed
 
     private void btnGenerateReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateReportActionPerformed
-        this.dispose();
-        GenerateReport GRForm = new GenerateReport();
-        GRForm.setVisible(true);
+        this.dispose(); // removes current form
+        GenerateReport GRForm = new GenerateReport(); // sets GRForm variable to store the specified form for redirection
+        GRForm.setVisible(true); // makes form visible
     }//GEN-LAST:event_btnGenerateReportActionPerformed
 
     private void btnViewUsersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewUsersActionPerformed
-        this.dispose();
-        ViewUsers VHForm = new ViewUsers();
-        VHForm.setVisible(true);
+        this.dispose(); // removes current form
+        ViewUsers VUForm = new ViewUsers(); // sets VUForm variable to store the specified form for redirection
+        VUForm.setVisible(true); // makes form visible
     }//GEN-LAST:event_btnViewUsersActionPerformed
     
     /**
